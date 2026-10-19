@@ -44,8 +44,18 @@ Se usa **PostgreSQL** como base de datos propia de la API. Para cumplir EC-02 y 
 **Negativas y riesgos**
 
 - Se agrega un servicio que hay que levantar, respaldar y actualizar.
+- La regla de "un solo certificado" queda atada a una base de datos relacional. Si algún día se cambiara a otro tipo de base, habría que volver a programar ese control.
 - El bloqueo de fila hace que la segunda aprobación espere unos milisegundos; con el volumen previsto (A3) este tiempo no es relevante, pero si la demanda creciera mucho debería medirse.
 - Las pruebas automáticas deben usar PostgreSQL y no SQLite, porque el comportamiento de los bloqueos es distinto; por ejemplo, una prueba de EC-02 que pasa en SQLite podría no reflejar lo que pasa en producción.
+
+## Vínculos
+
+| Tipo | Elemento |
+|---|---|
+| Drivers | D2 (un pedido, un solo certificado), D1 (registro de accesos), D5 (despliegue sencillo) |
+| Escenarios | EC-02, EC-04, EC-08 |
+| Restricciones | R2 (no escribir en el sistema académico), R3 (un pedido no genera dos certificados), R4 (software libre), R7 (contenedores y GitHub) |
+| Vista C4 nivel 2 | Relación "API REST CertiUMET → Base de datos (PostgreSQL 16): Lee y escribe [SQL]" |
 
 ## Referencias
 

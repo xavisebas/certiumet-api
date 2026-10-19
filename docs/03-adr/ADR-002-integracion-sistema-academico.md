@@ -55,6 +55,16 @@ Para R1, las calificaciones **no se guardan** en PostgreSQL. Se piden en el mome
 - Si las calificaciones cambian entre la aprobación y la descarga, el PDF muestra las del momento de la emisión. Es el comportamiento esperado de un certificado, pero debe quedar claro para la Secretaría.
 - El adaptador de Oracle no se puede probar contra el sistema real dentro del proyecto; solo se prueba que cumple el puerto.
 
+## Vínculos
+
+| Tipo | Elemento |
+|---|---|
+| Drivers | D3 (conexión cambiable y sin afectar al sistema académico), D1 (proteger calificaciones) |
+| Escenarios | EC-05, EC-06, EC-01 |
+| Restricciones y supuestos | R1 (protección de datos), R2 (solo lectura), A1 (sistema académico simulado) |
+| Vista C4 nivel 1 | Relación "CertiUMET → Sistema académico institucional: Lee datos del estudiante y calificaciones (solo lectura)" |
+| Vista C4 nivel 2 | Relación "API REST CertiUMET → Sistema académico: Consulta datos académicos [HTTPS/JSON]" |
+
 ## Referencias
 
 Nygard, M. (2011, 15 de noviembre). *Documenting architecture decisions*. Cognitect. https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions

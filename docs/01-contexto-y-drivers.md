@@ -6,6 +6,8 @@
 **Hito:** H1 · Dossier de arquitectura (`v0.1.0`)
 **Modalidad:** trabajo individual
 
+**Convención de identificadores:** S = stakeholder · R = restricción · A = supuesto · D = driver arquitectónico · EC = escenario de calidad · CU = caso de uso · ADR = registro de decisión de arquitectura.
+
 ---
 
 ## 1. Descripción del caso
@@ -105,18 +107,20 @@ Los drivers salen de los concerns y de las restricciones. Según Bass et al. (20
 
 Cada escenario tiene sus seis partes (fuente, estímulo, entorno, artefacto, respuesta y medida), revisa **un solo atributo de calidad** y tiene una **medida con números** que se puede comprobar con pruebas automáticas (Bass et al., 2021). Estas medidas serán, por ejemplo, los criterios que deberán pasar las pruebas del pipeline de integración continua en el hito H4.
 
-### Resumen y prioridad
+### Priorización de escenarios
 
-| ID | Atributo de calidad | Driver | Importancia | Dificultad | Prioridad |
+Cada escenario se prioriza por su **impacto en el negocio** (si bloquea el servicio, genera un riesgo legal o rompe la confianza del usuario) y por el **costo de cambiar** la solución después (si toca datos o reglas que usan varios módulos). Se evitó marcar todo como prioritario: si todo es prioridad, nada lo es.
+
+| ID | Atributo de calidad | Driver | Impacto en el negocio | Costo de cambio | Prioridad |
 |---|---|---|---|---|---|
-| EC-01 | Seguridad · Confidencialidad | D1 | Alta | Alta | 1 |
-| EC-02 | Seguridad · Integridad | D2 | Alta | Alta | 1 |
-| EC-03 | Seguridad · Autenticidad | D2 | Alta | Media | 2 |
-| EC-04 | Seguridad · Responsabilidad | D1 | Alta | Media | 2 |
-| EC-05 | Mantenibilidad · Modificabilidad | D3 | Alta | Media | 2 |
-| EC-06 | Fiabilidad · Tolerancia a fallos | D3 | Media | Media | 3 |
-| EC-07 | Eficiencia de desempeño · Comportamiento temporal | D4 | Media | Media | 3 |
-| EC-08 | Flexibilidad · Instalabilidad | D5 | Media | Baja | 4 |
+| EC-01 | Seguridad · Confidencialidad | D1 | Alto: exponer calificaciones incumple la ley (R1) | Alto: el control de acceso atraviesa todos los endpoints | 1 |
+| EC-02 | Seguridad · Integridad | D2 | Alto: un certificado duplicado quita valor legal a los documentos | Alto: depende del modelo de datos y de la regla de emisión | 1 |
+| EC-03 | Seguridad · Autenticidad | D2 | Alto: si no se puede verificar, terceros no confían en el certificado | Medio: el código de verificación vive en un solo módulo | 2 |
+| EC-04 | Seguridad · Responsabilidad | D1 | Alto: sin bitácora no se puede responder a una auditoría (R1) | Medio: se registra desde un solo punto, la capa de casos de uso | 2 |
+| EC-05 | Mantenibilidad · Modificabilidad | D3 | Medio: sin esto no se puede pasar al sistema académico real | Alto: si la conexión se reparte en el código, cambiarla obliga a tocar todo | 2 |
+| EC-06 | Fiabilidad · Tolerancia a fallos | D3 | Medio: una caída retrasa pedidos, pero no los pierde | Medio: los reintentos se manejan en el adaptador | 3 |
+| EC-07 | Eficiencia de desempeño · Comportamiento temporal | D4 | Medio: la lentitud molesta, pero no bloquea el servicio | Medio: se mejora con más procesos o índices | 3 |
+| EC-08 | Flexibilidad · Instalabilidad | D5 | Bajo: afecta al equipo, no al usuario final | Bajo: se ajusta en los archivos de despliegue | 4 |
 
 ### EC-01 · Confidencialidad de las calificaciones (D1)
 
@@ -208,7 +212,19 @@ Cada escenario tiene sus seis partes (fuente, estímulo, entorno, artefacto, res
 
 ---
 
-## 6. Trazabilidad
+## 6. Evaluación de estilos arquitectónicos
+
+Con los escenarios priorizados se compararon tres estilos con el método ATAM en forma simplificada: presentar los drivers y las alternativas, priorizar los escenarios, calificar cada alternativa y registrar los trade-offs. El detalle está en [`03-adr/matriz-decision.md`](03-adr/matriz-decision.md) y la decisión en el [ADR-003](03-adr/ADR-003-estilo-arquitectonico.md).
+
+| Alternativa | Costo operativo | Puntaje ponderado (sobre 5) | Con pesos de EC-06 y EC-07 duplicados |
+|---|---|---|---|
+| A · Monolito modular con arquitectura hexagonal | Bajo | **4,80** | **4,67** |
+| C · Monolito en capas tradicional | Bajo | 3,61 | 3,51 |
+| B · Microservicios | Alto | 3,55 | 3,79 |
+
+El atributo dominante del caso es la **integridad** (EC-02: un pedido, un solo certificado), junto con la confidencialidad de las calificaciones. Además, el equipo es de una sola persona (R5) y el presupuesto es bajo (R4). Por eso gana el monolito modular, y el resultado se mantiene aunque se cambien los pesos.
+
+## 7. Trazabilidad
 
 La siguiente tabla une cada stakeholder o restricción con su driver y sus escenarios. Esto ayuda a comprobar que ninguna preocupación importante quedó sin un escenario que la mida.
 
