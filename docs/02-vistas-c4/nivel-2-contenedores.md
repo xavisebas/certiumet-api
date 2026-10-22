@@ -40,7 +40,7 @@ flowchart TB
 
 ## Contenedores
 
-La tarea programada se ejecuta dentro del contenedor de la API para mantener un despliegue simple (R5, EC-08). Si el volumen creciera, podría separarse en un contenedor propio sin cambiar el código, porque usa los mismos módulos.
+La tarea programada se ejecuta dentro del contenedor de la API para mantener un despliegue simple (R5, E-08). Si el volumen creciera, podría separarse en un contenedor propio sin cambiar el código, porque usa los mismos módulos.
 
 | Contenedor | Tecnología | Responsabilidad | ADR |
 |---|---|---|---|
@@ -59,14 +59,14 @@ La tarea programada se ejecuta dentro del contenedor de la API para mantener un 
 
 | Escenario | Qué parte del diagrama lo atiende |
 |---|---|
-| EC-01 Confidencialidad | La API valida el token y el dueño del pedido antes de responder |
-| EC-02 Integridad | La API y la base de datos: transacción con bloqueo de fila y `UNIQUE` (ADR-001) |
-| EC-03 Autenticidad | La API firma y verifica los códigos; la base guarda solo el código y el hash del documento |
-| EC-04 Responsabilidad | La bitácora se guarda en la misma transacción que la operación |
-| EC-05 Modificabilidad | Solo la API habla con el sistema académico, y lo hace por un solo adaptador (ADR-002) |
-| EC-06 Tolerancia a fallos | La tarea programada de la API reintenta las validaciones; la consulta de estado solo depende de la API y la base de datos |
-| EC-07 Desempeño | La API corre con varios procesos de Gunicorn |
-| EC-08 Instalabilidad | Un `docker-compose.yml` con cuatro contenedores: API, PostgreSQL, servicio académico simulado y SMTP de pruebas |
+| E-01 Confidencialidad | La API valida el token y el dueño del pedido antes de responder |
+| E-02 Integridad | La API y la base de datos: transacción con bloqueo de fila y `UNIQUE` (ADR-001) |
+| E-03 Autenticidad | La API firma y verifica los códigos; la base guarda solo el código y el hash del documento |
+| E-04 Responsabilidad | La bitácora se guarda en la misma transacción que la operación |
+| E-05 Modificabilidad | Solo la API habla con el sistema académico, y lo hace por un solo adaptador (ADR-002) |
+| E-06 Tolerancia a fallos | La tarea programada de la API reintenta las validaciones; la consulta de estado solo depende de la API y la base de datos |
+| E-07 Desempeño | La API corre con varios procesos de Gunicorn |
+| E-08 Instalabilidad | Un `docker-compose.yml` con cuatro contenedores: API, PostgreSQL, servicio académico simulado y SMTP de pruebas |
 
 ## Referencias
 

@@ -42,8 +42,11 @@ docs/
 │   ├── ADR-001-base-de-datos-postgresql.md
 │   ├── ADR-002-integracion-sistema-academico.md
 │   ├── ADR-003-estilo-arquitectonico.md
+│   ├── ADR-004-idioma-de-los-artefactos.md
 │   └── matriz-decision.md        Matriz ponderada del estilo
-└── 04-registro-ia.md             Registro de uso de IA
+├── 04-registro-ia.md             Registro de uso de IA
+├── 06-mapa-toolchain.md          Proceso por fases, tareas F×E×R y herramientas CASE
+└── 07-historias-y-criterios.md   Historias de usuario y criterios en Gherkin
 ```
 
 ## Resumen de la arquitectura
@@ -51,6 +54,7 @@ docs/
 - **Estilo:** monolito modular con arquitectura hexagonal ([ADR-003](docs/03-adr/ADR-003-estilo-arquitectonico.md)).
 - **Base de datos:** PostgreSQL ([ADR-001](docs/03-adr/ADR-001-base-de-datos-postgresql.md)).
 - **Sistema académico:** se consulta solo en lectura, a través de un puerto y un adaptador que se puede cambiar ([ADR-002](docs/03-adr/ADR-002-integracion-sistema-academico.md)).
+- **Idioma:** lenguaje del negocio en español en el contrato, los criterios y el código del dominio ([ADR-004](docs/03-adr/ADR-004-idioma-de-los-artefactos.md)).
 
 ## Hitos del módulo
 

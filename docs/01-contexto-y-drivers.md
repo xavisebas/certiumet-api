@@ -6,7 +6,7 @@
 **Hito:** H1 · Dossier de arquitectura (`v0.1.0`)
 **Modalidad:** trabajo individual
 
-**Convención de identificadores:** S = stakeholder · R = restricción · A = supuesto · D = driver arquitectónico · EC = escenario de calidad · CU = caso de uso · ADR = registro de decisión de arquitectura.
+**Convención de identificadores:** S = stakeholder · R = restricción · A = supuesto · D = driver arquitectónico · E = escenario de calidad · HU = historia de usuario · CA = criterio de aceptación · T = tarea de alto volumen · CU = caso de uso · ADR = registro de decisión de arquitectura.
 
 ---
 
@@ -113,16 +113,16 @@ Cada escenario se prioriza por su **impacto en el negocio** (si bloquea el servi
 
 | ID | Atributo de calidad | Driver | Impacto en el negocio | Costo de cambio | Prioridad |
 |---|---|---|---|---|---|
-| EC-01 | Seguridad · Confidencialidad | D1 | Alto: exponer calificaciones incumple la ley (R1) | Alto: el control de acceso atraviesa todos los endpoints | 1 |
-| EC-02 | Seguridad · Integridad | D2 | Alto: un certificado duplicado quita valor legal a los documentos | Alto: depende del modelo de datos y de la regla de emisión | 1 |
-| EC-03 | Seguridad · Autenticidad | D2 | Alto: si no se puede verificar, terceros no confían en el certificado | Medio: el código de verificación vive en un solo módulo | 2 |
-| EC-04 | Seguridad · Responsabilidad | D1 | Alto: sin bitácora no se puede responder a una auditoría (R1) | Medio: se registra desde un solo punto, la capa de casos de uso | 2 |
-| EC-05 | Mantenibilidad · Modificabilidad | D3 | Medio: sin esto no se puede pasar al sistema académico real | Alto: si la conexión se reparte en el código, cambiarla obliga a tocar todo | 2 |
-| EC-06 | Fiabilidad · Tolerancia a fallos | D3 | Medio: una caída retrasa pedidos, pero no los pierde | Medio: los reintentos se manejan en el adaptador | 3 |
-| EC-07 | Eficiencia de desempeño · Comportamiento temporal | D4 | Medio: la lentitud molesta, pero no bloquea el servicio | Medio: se mejora con más procesos o índices | 3 |
-| EC-08 | Flexibilidad · Instalabilidad | D5 | Bajo: afecta al equipo, no al usuario final | Bajo: se ajusta en los archivos de despliegue | 4 |
+| E-01 | Seguridad · Confidencialidad | D1 | Alto: exponer calificaciones incumple la ley (R1) | Alto: el control de acceso atraviesa todos los endpoints | 1 |
+| E-02 | Seguridad · Integridad | D2 | Alto: un certificado duplicado quita valor legal a los documentos | Alto: depende del modelo de datos y de la regla de emisión | 1 |
+| E-03 | Seguridad · Autenticidad | D2 | Alto: si no se puede verificar, terceros no confían en el certificado | Medio: el código de verificación vive en un solo módulo | 2 |
+| E-04 | Seguridad · Responsabilidad | D1 | Alto: sin bitácora no se puede responder a una auditoría (R1) | Medio: se registra desde un solo punto, la capa de casos de uso | 2 |
+| E-05 | Mantenibilidad · Modificabilidad | D3 | Medio: sin esto no se puede pasar al sistema académico real | Alto: si la conexión se reparte en el código, cambiarla obliga a tocar todo | 2 |
+| E-06 | Fiabilidad · Tolerancia a fallos | D3 | Medio: una caída retrasa pedidos, pero no los pierde | Medio: los reintentos se manejan en el adaptador | 3 |
+| E-07 | Eficiencia de desempeño · Comportamiento temporal | D4 | Medio: la lentitud molesta, pero no bloquea el servicio | Medio: se mejora con más procesos o índices | 3 |
+| E-08 | Flexibilidad · Instalabilidad | D5 | Bajo: afecta al equipo, no al usuario final | Bajo: se ajusta en los archivos de despliegue | 4 |
 
-### EC-01 · Confidencialidad de las calificaciones (D1)
+### E-01 · Confidencialidad de las calificaciones (D1)
 
 | Parte | Descripción |
 |---|---|
@@ -133,7 +133,7 @@ Cada escenario se prioriza por su **impacto en el negocio** (si bloquea el servi
 | Respuesta | La API responde `404 Not Found`, sin decir si el pedido existe, y guarda el intento en la bitácora |
 | Medida | 100 % de 200 intentos de acceso a pedidos ajenos rechazados en la prueba automática; 0 calificaciones devueltas; 100 % de los intentos guardados en la bitácora |
 
-### EC-02 · Integridad: un pedido, un solo certificado (D2)
+### E-02 · Integridad: un pedido, un solo certificado (D2)
 
 | Parte | Descripción |
 |---|---|
@@ -144,7 +144,7 @@ Cada escenario se prioriza por su **impacto en el negocio** (si bloquea el servi
 | Respuesta | Solo una de las aprobaciones genera el certificado; la otra recibe `409 Conflict` con el estado actual del pedido |
 | Medida | 0 certificados duplicados en 1 000 pares de aprobaciones simultáneas; 100 % de las aprobaciones que llegan segundas reciben `409 Conflict` |
 
-### EC-03 · Autenticidad del certificado (D2)
+### E-03 · Autenticidad del certificado (D2)
 
 | Parte | Descripción |
 |---|---|
@@ -155,7 +155,7 @@ Cada escenario se prioriza por su **impacto en el negocio** (si bloquea el servi
 | Respuesta | Indica si el certificado es válido y muestra solo lo mínimo (nombres, tipo de certificado y fecha de emisión), sin calificaciones |
 | Medida | 100 % de 100 códigos alterados marcados como no válidos; 0 errores con 100 códigos reales (todos confirmados como auténticos) |
 
-### EC-04 · Responsabilidad: registro de accesos (D1)
+### E-04 · Responsabilidad: registro de accesos (D1)
 
 | Parte | Descripción |
 |---|---|
@@ -166,7 +166,7 @@ Cada escenario se prioriza por su **impacto en el negocio** (si bloquea el servi
 | Respuesta | Se guarda el usuario, la acción, el recurso, la fecha y hora, y la dirección IP; la bitácora no se puede editar ni borrar desde la API |
 | Medida | 100 % de las operaciones sobre datos personales registradas durante las pruebas; 0 ediciones o borrados permitidos en la bitácora; 100 % de los registros con los cinco campos completos |
 
-### EC-05 · Modificabilidad: cambiar la conexión al sistema académico (D3)
+### E-05 · Modificabilidad: cambiar la conexión al sistema académico (D3)
 
 | Parte | Descripción |
 |---|---|
@@ -177,7 +177,7 @@ Cada escenario se prioriza por su **impacto en el negocio** (si bloquea el servi
 | Respuesta | El cambio se hace reemplazando solo el adaptador de conexión, sin tocar las reglas de negocio ni la forma de los endpoints |
 | Medida | Como máximo 1 módulo modificado; 0 cambios en los endpoints CU-01 a CU-05; 100 % de las pruebas existentes aprobadas después del cambio; 8 horas de trabajo o menos |
 
-### EC-06 · Tolerancia a fallos del sistema académico (D3)
+### E-06 · Tolerancia a fallos del sistema académico (D3)
 
 | Parte | Descripción |
 |---|---|
@@ -188,7 +188,7 @@ Cada escenario se prioriza por su **impacto en el negocio** (si bloquea el servi
 | Respuesta | Los pedidos nuevos quedan en estado `EN_VALIDACION` y se vuelven a validar solos más tarde; la consulta de estado (CU-02) sigue funcionando |
 | Medida | 0 pedidos perdidos; consulta de estado disponible el 100 % del tiempo de la caída; reintentos cada 5 minutos (máximo 6) y validación completa en menos de 10 minutos después de que el sistema académico vuelve |
 
-### EC-07 · Desempeño en temporada alta (D4)
+### E-07 · Desempeño en temporada alta (D4)
 
 | Parte | Descripción |
 |---|---|
@@ -199,7 +199,7 @@ Cada escenario se prioriza por su **impacto en el negocio** (si bloquea el servi
 | Respuesta | Todos los pedidos se registran y cada estudiante recibe su número de trámite |
 | Medida | El 95 % de las respuestas en menos de 2 segundos; 0 pedidos perdidos; menos del 1 % de errores en la prueba de carga |
 
-### EC-08 · Instalabilidad del entorno (D5)
+### E-08 · Instalabilidad del entorno (D5)
 
 | Parte | Descripción |
 |---|---|
@@ -216,13 +216,13 @@ Cada escenario se prioriza por su **impacto en el negocio** (si bloquea el servi
 
 Con los escenarios priorizados se compararon tres estilos con el método ATAM en forma simplificada: presentar los drivers y las alternativas, priorizar los escenarios, calificar cada alternativa y registrar los trade-offs. El detalle está en [`03-adr/matriz-decision.md`](03-adr/matriz-decision.md) y la decisión en el [ADR-003](03-adr/ADR-003-estilo-arquitectonico.md).
 
-| Alternativa | Costo operativo | Puntaje ponderado (sobre 5) | Con pesos de EC-06 y EC-07 duplicados |
+| Alternativa | Costo operativo | Puntaje ponderado (sobre 5) | Con pesos de E-06 y E-07 duplicados |
 |---|---|---|---|
 | A · Monolito modular con arquitectura hexagonal | Bajo | **4,80** | **4,67** |
 | C · Monolito en capas tradicional | Bajo | 3,61 | 3,51 |
 | B · Microservicios | Alto | 3,55 | 3,79 |
 
-El atributo dominante del caso es la **integridad** (EC-02: un pedido, un solo certificado), junto con la confidencialidad de las calificaciones. Además, el equipo es de una sola persona (R5) y el presupuesto es bajo (R4). Por eso gana el monolito modular, y el resultado se mantiene aunque se cambien los pesos.
+El atributo dominante del caso es la **integridad** (E-02: un pedido, un solo certificado), junto con la confidencialidad de las calificaciones. Además, el equipo es de una sola persona (R5) y el presupuesto es bajo (R4). Por eso gana el monolito modular, y el resultado se mantiene aunque se cambien los pesos.
 
 ## 7. Trazabilidad
 
@@ -230,11 +230,11 @@ La siguiente tabla une cada stakeholder o restricción con su driver y sus escen
 
 | Stakeholder o restricción | Driver | Escenarios |
 |---|---|---|
-| S1, S4, R1 | D1 | EC-01, EC-04 |
-| S2, S5, R3 | D2 | EC-02, EC-03 |
-| S6, R2, A1 | D3 | EC-05, EC-06 |
-| S1, S2, A3 | D4 | EC-07 |
-| S7, R4, R5, R7 | D5 | EC-08 |
+| S1, S4, R1 | D1 | E-01, E-04 |
+| S2, S5, R3 | D2 | E-02, E-03 |
+| S6, R2, A1 | D3 | E-05, E-06 |
+| S1, S2, A3 | D4 | E-07 |
+| S7, R4, R5, R7 | D5 | E-08 |
 
 ---
 

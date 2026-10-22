@@ -54,9 +54,9 @@ flowchart TB
 
 | Escenario | Dónde se ve en este nivel |
 |---|---|
-| EC-01, EC-04 | El delegado de protección de datos consulta la bitácora; solo personas autenticadas acceden a datos personales |
-| EC-03 | La entidad externa verifica certificados sin iniciar sesión y sin acceso a calificaciones |
-| EC-05, EC-06 | La comunicación con el sistema académico es de solo lectura y pasa por un único punto |
+| E-01, E-04 | El delegado de protección de datos consulta la bitácora; solo personas autenticadas acceden a datos personales |
+| E-03 | La entidad externa verifica certificados sin iniciar sesión y sin acceso a calificaciones |
+| E-05, E-06 | La comunicación con el sistema académico es de solo lectura y pasa por un único punto |
 
 ## Referencias
 

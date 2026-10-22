@@ -25,7 +25,7 @@ La instrucción 3 de la actividad pide revisar la consistencia de las vistas con
 | ¿Los nombres de los elementos son iguales en el nivel 1, el nivel 2, el `01` y los ADR? | | |
 | ¿Todas las flechas tienen etiqueta y se entiende qué hacen? | | |
 | ¿El nivel 1 evita nombrar tecnologías? | | |
-| ¿Cada escenario de calidad (EC-01 a EC-08) se puede ubicar en algún elemento de las vistas? | | |
+| ¿Cada escenario de calidad (E-01 a E-08) se puede ubicar en algún elemento de las vistas? | | |
 | ¿Las vistas muestran el estilo elegido en el ADR-003? | | |
 | ¿Los diagramas se ven bien en GitHub (sin errores ni textos encimados)? | | |
 

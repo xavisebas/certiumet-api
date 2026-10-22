@@ -2,7 +2,7 @@
 
 **Estado:** Aceptada
 **Fecha:** 14/10/2026
-**Escenarios relacionados:** EC-05, EC-06, EC-01
+**Escenarios relacionados:** E-05, E-06, E-01
 **Drivers relacionados:** D3, D1
 **Restricciones relacionadas:** R1, R2
 **Supuestos relacionados:** A1
@@ -13,15 +13,15 @@ Para revisar un pedido y armar el certificado, la API necesita los datos del est
 
 Esto deja tres necesidades:
 
-- **EC-05:** cambiar el servicio simulado por el real sin rehacer la API.
-- **EC-06:** si el sistema académico se cae, la API no debe perder pedidos ni dejar de mostrar su estado.
-- **R1 y EC-01:** traer solo los datos necesarios, para no guardar más información personal de la que hace falta.
+- **E-05:** cambiar el servicio simulado por el real sin rehacer la API.
+- **E-06:** si el sistema académico se cae, la API no debe perder pedidos ni dejar de mostrar su estado.
+- **R1 y E-01:** traer solo los datos necesarios, para no guardar más información personal de la que hace falta.
 
 ## Alternativas consideradas
 
 | Alternativa | A favor | En contra |
 |---|---|---|
-| **Consulta directa desde las vistas de la API** | Es lo más rápido de programar | El código de negocio queda amarrado al sistema académico; cambiar de simulado a Oracle obliga a tocar muchas partes (falla EC-05); si el sistema académico se cae, el pedido falla (falla EC-06) |
+| **Consulta directa desde las vistas de la API** | Es lo más rápido de programar | El código de negocio queda amarrado al sistema académico; cambiar de simulado a Oracle obliga a tocar muchas partes (falla E-05); si el sistema académico se cae, el pedido falla (falla E-06) |
 | **Copiar la base académica a PostgreSQL cada noche** | La API no depende del sistema académico en línea | Duplica calificaciones de todos los estudiantes, aunque no pidan nada (choca con R1); los datos pueden estar desactualizados hasta el día siguiente |
 | **Puerto y adaptador con reintentos** | El negocio solo conoce una interfaz; se cambia el adaptador y nada más; los fallos se manejan en un solo lugar | Más trabajo inicial: se programa una interfaz y al menos dos adaptadores |
 
@@ -36,7 +36,7 @@ Se programan dos **adaptadores**:
 
 El adaptador que se usa se elige con una variable de entorno, sin cambiar código.
 
-Para EC-06, cada llamada tiene un tiempo máximo de espera de 3 segundos. Si el sistema académico no responde, el pedido queda en `EN_VALIDACION` y una tarea programada lo vuelve a intentar cada 5 minutos, hasta 6 veces. Si después de eso sigue sin respuesta, el pedido pasa a revisión manual del funcionario.
+Para E-06, cada llamada tiene un tiempo máximo de espera de 3 segundos. Si el sistema académico no responde, el pedido queda en `EN_VALIDACION` y una tarea programada lo vuelve a intentar cada 5 minutos, hasta 6 veces. Si después de eso sigue sin respuesta, el pedido pasa a revisión manual del funcionario.
 
 Para R1, las calificaciones **no se guardan** en PostgreSQL. Se piden en el momento de emitir el certificado y solo quedan dentro del PDF. En la base se guarda el código de verificación y un resumen criptográfico (hash) del documento.
 
@@ -44,9 +44,9 @@ Para R1, las calificaciones **no se guardan** en PostgreSQL. Se piden en el mome
 
 **Positivas**
 
-- Cambiar de servicio simulado a Oracle afecta solo a un adaptador (EC-05).
-- Una caída del sistema académico no hace perder pedidos; solo retrasa su validación (EC-06).
-- La API guarda menos datos personales, lo que reduce el daño si algún día hubiera una filtración (R1, EC-01).
+- Cambiar de servicio simulado a Oracle afecta solo a un adaptador (E-05).
+- Una caída del sistema académico no hace perder pedidos; solo retrasa su validación (E-06).
+- La API guarda menos datos personales, lo que reduce el daño si algún día hubiera una filtración (R1, E-01).
 - En las pruebas es sencillo reemplazar el adaptador por uno falso para simular fallos.
 
 **Negativas y riesgos**
@@ -60,7 +60,7 @@ Para R1, las calificaciones **no se guardan** en PostgreSQL. Se piden en el mome
 | Tipo | Elemento |
 |---|---|
 | Drivers | D3 (conexión cambiable y sin afectar al sistema académico), D1 (proteger calificaciones) |
-| Escenarios | EC-05, EC-06, EC-01 |
+| Escenarios | E-05, E-06, E-01 |
 | Restricciones y supuestos | R1 (protección de datos), R2 (solo lectura), A1 (sistema académico simulado) |
 | Vista C4 nivel 1 | Relación "CertiUMET → Sistema académico institucional: Lee datos del estudiante y calificaciones (solo lectura)" |
 | Vista C4 nivel 2 | Relación "API REST CertiUMET → Sistema académico: Consulta datos académicos [HTTPS/JSON]" |
