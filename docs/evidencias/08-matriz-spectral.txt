@@ -1,0 +1,12 @@
+
+/home/xavier/proyectos/certiumet-api/api/pruebas/openapi-con-defectos.yaml
+   2:6   warning  info-contact               Info object must have "contact" object.                                                             info
+  42:21    error  oas3-valid-media-example   "example" property must have required property "cedula"                                             paths./api/v1/solicitudes.post.requestBody.content.application/json.example
+  58:9   warning  operation-operationId      Operation must have "operationId".                                                                  paths./api/v1/solicitudes/{id}.get
+  59:14  warning  operation-tag-defined      Operation tags must be defined in global tags.                                                      paths./api/v1/solicitudes/{id}.get.tags[0]
+  112:9    error  path-params                Operation must define parameter "{id}" as expected by path "/api/v1/solicitudes/{id}/certificado".  paths./api/v1/solicitudes/{id}/certificado.get
+ 120:11    error  path-params                Parameter "idSolicitud" must be used in path "/api/v1/solicitudes/{id}/certificado".                paths./api/v1/solicitudes/{id}/certificado.get.parameters[0]
+ 287:20    error  oas3-valid-schema-example  "example" property type must be string                                                              components.schemas.Solicitud.properties.fechaCreacion.example
+
+✖ 7 problems (4 errors, 3 warnings, 0 infos, 0 hints)
+codigo de salida: 1

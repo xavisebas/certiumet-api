@@ -1,0 +1,3 @@
+6.17.0
+No results with a severity of 'hint' or higher found!
+codigo de salida: 0

@@ -1,0 +1,19 @@
+2.71.0
+No configurations were provided -- using built in recommended configuration by default.
+
+validating api/pruebas/openapi-con-defectos.yaml...
+api/pruebas/openapi-con-defectos.yaml:
+  120:17  error    path-parameters-defined         Path parameter `idSolicitud` is not used in the path `/api/v1/solicitudes/{id}/certificado`.
+  119:7   error    path-parameters-defined         The operation does not define the path parameter `{id}` expected by path `/api/v1/solicitudes/{id}/certificado`.
+  15:10   warning  no-server-example.com           Server `url` should not point to example.com or localhost.
+  43:15   warning  no-invalid-media-type-examples  Example value must conform to the schema: must have required property 'cedula'.
+  287:20  warning  no-invalid-schema-examples      Example value must conform to the schema: type must be string.
+  58:5    warning  operation-operationId           Operation object should contain `operationId` field.
+  157:7   warning  operation-4xx-response          Operation must have at least one `4XX` response.
+
+api/pruebas/openapi-con-defectos.yaml: validated in 36ms
+
+❌ Validation failed with 2 errors and 5 warnings.
+run `redocly lint --generate-ignore-file` to add all problems to the ignore file.
+
+codigo de salida: 1

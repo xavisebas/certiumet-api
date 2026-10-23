@@ -1,0 +1,9 @@
+codigo de salida: 0
+Archivos Python generados: 24
+__init__.py
+certificados_api.py
+certificados_api_base.py
+solicitudes_api.py
+solicitudes_api_base.py
+verificaciones_api.py
+verificaciones_api_base.py

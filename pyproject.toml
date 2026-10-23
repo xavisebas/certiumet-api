@@ -1,0 +1,32 @@
+[project]
+name = "certiumet-api"
+version = "0.2.0"
+description = "API de pedidos y verificación de certificados académicos (Módulo 8, UPEC)"
+requires-python = ">=3.10"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+src = ["src", "tests"]
+extend-exclude = ["src/*/migrations", "api/stubs"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["config", "solicitudes", "emision", "auditoria", "integracion_academica", "apoyo"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+pythonpath = ["src"]
+testpaths = ["tests"]
+bdd_features_base_dir = "tests/features"
+addopts = "-m 'not carga'"
+filterwarnings = ["ignore::DeprecationWarning:gherkin.*"]
+markers = [
+    "carga: prueba de carga de E-07; se ejecuta con Locust en la semana 3",
+    "HU-01: historia HU-01", "HU-02: historia HU-02", "HU-03: historia HU-03",
+    "HU-04: historia HU-04", "HU-05: historia HU-05",
+    "E-01: escenario E-01", "E-02: escenario E-02", "E-03: escenario E-03",
+    "E-04: escenario E-04", "E-06: escenario E-06", "E-07: escenario E-07",
+]

@@ -44,7 +44,7 @@ Característica: Pedir un certificado académico
     Entonces la API responde 422
     Y no se guarda ningún pedido
 
-  @E-07
+  @E-07 @carga
   Escenario: CA-01.3 Temporada alta
     Dado que 500 estudiantes envían pedidos en 10 minutos
     Cuando la API los procesa
@@ -52,7 +52,7 @@ Característica: Pedir un certificado académico
     Y hay 0 pedidos perdidos
     Y los errores son menos del 1 %
 
-  @E-06 @extension
+  @E-06
   Escenario: CA-01.4 Sistema académico sin respuesta
     Dado un estudiante con sesión iniciada
     Y el sistema académico no responde
@@ -188,8 +188,8 @@ Característica: Verificar la autenticidad de un certificado
 
 | Criterio | Escenario | Medida que verifica |
 |---|---|---|
-| CA-01.3 | E-07 | El 95 % de las respuestas en menos de 2 s con 500 pedidos en 10 min; 0 pedidos perdidos; menos del 1 % de errores |
-| CA-01.4 | E-06 | 0 pedidos perdidos durante la caída (extensión posterior: la tarea de reintentos no entra en el esqueleto) |
+| CA-01.3 | E-07 | El 95 % de las respuestas en menos de 2 s con 500 pedidos en 10 min; 0 pedidos perdidos; menos del 1 % de errores. Lleva la etiqueta `@carga`: se ejecuta con una herramienta de carga en la semana 3 y no forma parte de las pruebas del esqueleto |
+| CA-01.4 | E-06 | 0 pedidos perdidos durante la caída. Los reintentos cada 5 minutos (máximo 6) son extensión posterior: la tarea programada no entra en el esqueleto |
 | CA-02.2 y CA-04.3 | E-01 | 100 % de 200 intentos rechazados; 0 calificaciones devueltas; 100 % de los intentos en la bitácora |
 | CA-03.1 y CA-04.1 | E-04 | 100 % de las operaciones registradas con los cinco campos |
 | CA-03.2 | E-02 | 0 certificados duplicados en 1 000 pares de aprobaciones simultáneas; 100 % de las segundas aprobaciones con 409 |

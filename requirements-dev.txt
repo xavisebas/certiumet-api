@@ -1,0 +1,6 @@
+-r requirements.txt
+pytest>=8.4,<9
+pytest-django>=4.11,<5
+pytest-bdd>=8.1,<9
+ruff>=0.14,<0.15
+import-linter>=2.5,<3

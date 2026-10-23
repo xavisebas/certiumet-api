@@ -135,14 +135,18 @@ El riesgo de uso es el riesgo de confiar en la herramienta sin comprobar su resu
 
 ## Registro de evidencia de las herramientas
 
-Se instalan las herramientas de las tres tareas priorizadas y se prueban con un ejemplo mínimo; al menos una es de IA. Los resultados se copian tal como salen en la terminal.
+Se instalaron las herramientas de las tres tareas priorizadas y se probaron sobre el caso real con `bash scripts/cadena.sh`, en el equipo del estudiante (WSL2 con Ubuntu 22.04, Python 3.10.12, Node.js 24, Java 17 y PostgreSQL 16), el 23/10/2026. La salida completa de cada herramienta está en `docs/evidencias/`.
 
 | Tarea y herramienta | Fecha | Tiempo | Qué funcionó | Qué falló | Riesgo observado | Evidencia |
 |---|---|---|---|---|---|---|
-| T07 · pytest + PostgreSQL 16 | _(pendiente)_ | | | | | |
-| T07 · Claude (IA) | _(pendiente)_ | | | | | |
-| T04 · Spectral | _(pendiente)_ | | | | | |
-| T06 · OpenAPI Generator | _(pendiente)_ | | | | | |
+| T07 · pytest 8.4.2 + pytest-bdd 8.1.0 + PostgreSQL 16 | 23/10/2026 | 10,5 s las 14 pruebas | CA-03.2: 1 000 pares de aprobaciones simultáneas, 1 000 certificados, **0 duplicados** y 409 en 1 000/1 000 segundas aprobaciones; las otras 13 pruebas de los CA pasan | Con SQLite la prueba de concurrencia no es válida (no hay bloqueo por fila); por eso se omite si no hay PostgreSQL | Alto si se confía en la prueba sin comprobarla: se quitó el bloqueo por fila a propósito y la prueba falló (500 en vez de 409), lo que confirma que detecta el defecto | `docs/evidencias/07-pruebas.txt` |
+| T07 · Claude (IA), asistente que propuso casos y código de prueba | 22/10/2026 | — | Propuso los pasos de los 15 criterios y la estrategia de 1 000 pares con una barrera por par | La primera versión de las pruebas falló en 13 de 14 casos: usaba la base de datos sin crear las tablas de prueba; se corrigió marcando las pruebas desde `conftest.py` | Alto: código de prueba generado por IA puede pasar sin probar nada; se controló con la prueba de mutación descrita arriba | `04-registro-ia.md`, fila 13 |
+| T04 · Spectral 6.17.0 | 23/10/2026 | Menos de 1 s | El contrato real pasa sin errores ni avisos; en el contrato con 8 defectos sembrados encontró 5 de forma directa y 1 de forma indirecta | No detectó los 3 defectos de significado (falta 409, verificación con token y cédula pedida, salvo por el ejemplo) | Medio: "sin errores" no significa que el contrato cumpla las historias | `02-spectral.txt`, `08-matriz-spectral.txt` |
+| T06 · OpenAPI Generator 7.26.0 | 23/10/2026 | 7 s (incluye descargar el generador la primera vez) | Generó la documentación HTML y 24 archivos de stubs con rutas, modelos y operaciones de los 5 endpoints | No tiene generador de servidor para Django; los stubs salen en FastAPI y sirven solo como referencia | Medio: los stubs no se pueden usar tal cual en el stack elegido (ADR-003) | `03-documentacion.txt`, `04-stubs.txt` |
+| T05 · Prism 5.15.11 (habilitante) | 23/10/2026 | 8 s | El mock respondió según el contrato: 201, 422, 401, 409 y 200 | — | Bajo | `04b-prism-mock.txt` |
+| T08 · ruff 0.14.14 e import-linter 2.15 (habilitantes) | 23/10/2026 | Menos de 1 s | Sin errores de estilo; las 3 reglas de dependencia se cumplen (dominio sin Django, adaptador académico solo en la fábrica, bitácora independiente) | En la primera versión ruff encontró 3 errores en el código generado con IA | Bajo | `05-ruff.txt`, `06-import-linter.txt` |
+
+La comparación de Spectral, Redocly CLI y Claude para la tarea T04, con pesos y calificaciones, está en la matriz del `08-informe-cadena-case.md`.
 
 ## Referencias
 

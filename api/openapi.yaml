@@ -1,0 +1,327 @@
+openapi: 3.0.3
+info:
+  title: API CertiUMET
+  version: 0.2.0
+  description: >-
+    Contrato de la API de pedidos y verificación de certificados académicos de la
+    Secretaría. Cada endpoint corresponde a una historia de usuario (HU-01 a HU-05)
+    del documento docs/07-historias-y-criterios.md. El contrato no expone datos
+    personales sensibles: el estudiante se identifica por su token y no por su cédula
+    (restricción R1).
+  contact:
+    name: Xavier Guaygua (proyecto individual, Módulo 8)
+    url: https://github.com/xavisebas/certiumet-api
+  license:
+    name: Uso académico (sin licencia de distribución)
+servers:
+  - url: http://localhost:8000
+    description: Entorno local de desarrollo
+tags:
+  - name: Solicitudes
+    description: Registro, consulta y resolución de pedidos de certificados (HU-01, HU-02 y HU-03).
+  - name: Certificados
+    description: Descarga del certificado emitido (HU-04).
+  - name: Verificaciones
+    description: Comprobación pública de la autenticidad de un certificado (HU-05).
+security:
+  - tokenUsuario: []
+paths:
+  /api/v1/solicitudes:
+    post:
+      tags: [Solicitudes]
+      operationId: crearSolicitud
+      summary: Pedir un certificado
+      description: >-
+        HU-01 · CA-01.1 y CA-01.2. Registra el pedido del estudiante que inició sesión.
+        El pedido empieza en EN_VALIDACION hasta que el sistema académico confirme los
+        requisitos (E-06).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NuevaSolicitud"
+            example:
+              tipoCertificado: MATRICULA
+      responses:
+        "201":
+          description: Pedido registrado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Solicitud"
+        "401":
+          $ref: "#/components/responses/NoAutenticado"
+        "403":
+          $ref: "#/components/responses/SinPermiso"
+        "422":
+          $ref: "#/components/responses/DatosInvalidos"
+  /api/v1/solicitudes/{id}:
+    get:
+      tags: [Solicitudes]
+      operationId: consultarSolicitud
+      summary: Consultar el estado de un pedido propio
+      description: >-
+        HU-02 · CA-02.1 y CA-02.2. Si el pedido no es del estudiante que consulta, la
+        respuesta es 404 sin indicar si existe, y el intento queda en la bitácora (E-01, E-04).
+      parameters:
+        - $ref: "#/components/parameters/IdSolicitud"
+      responses:
+        "200":
+          description: Estado del pedido.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Solicitud"
+        "401":
+          $ref: "#/components/responses/NoAutenticado"
+        "404":
+          $ref: "#/components/responses/NoEncontrado"
+  /api/v1/solicitudes/{id}/resolucion:
+    patch:
+      tags: [Solicitudes]
+      operationId: resolverSolicitud
+      summary: Aprobar o rechazar un pedido
+      description: >-
+        HU-03 · CA-03.1 a CA-03.4. Solo el funcionario de Secretaría puede resolver. Al
+        aprobar se emite un único certificado; una segunda aprobación del mismo pedido
+        recibe 409 con el estado actual (E-02, ADR-001).
+      parameters:
+        - $ref: "#/components/parameters/IdSolicitud"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Resolucion"
+            example:
+              decision: APROBAR
+      responses:
+        "200":
+          description: Pedido resuelto.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Solicitud"
+        "401":
+          $ref: "#/components/responses/NoAutenticado"
+        "403":
+          $ref: "#/components/responses/SinPermiso"
+        "404":
+          $ref: "#/components/responses/NoEncontrado"
+        "409":
+          $ref: "#/components/responses/Conflicto"
+        "422":
+          $ref: "#/components/responses/DatosInvalidos"
+  /api/v1/solicitudes/{id}/certificado:
+    get:
+      tags: [Certificados]
+      operationId: descargarCertificado
+      summary: Descargar el certificado en PDF
+      description: >-
+        HU-04 · CA-04.1 a CA-04.3. Solo para pedidos propios en estado APROBADO. La
+        descarga queda en la bitácora (E-04).
+      parameters:
+        - $ref: "#/components/parameters/IdSolicitud"
+      responses:
+        "200":
+          description: Certificado en PDF.
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        "401":
+          $ref: "#/components/responses/NoAutenticado"
+        "404":
+          $ref: "#/components/responses/NoEncontrado"
+        "409":
+          $ref: "#/components/responses/Conflicto"
+  /api/v1/verificaciones/{codigo}:
+    get:
+      tags: [Verificaciones]
+      operationId: verificarCertificado
+      summary: Verificar la autenticidad de un certificado
+      description: >-
+        HU-05 · CA-05.1 y CA-05.2. Acceso público sin iniciar sesión. Muestra solo
+        nombres, tipo de certificado y fecha de emisión; nunca calificaciones (E-03, R1).
+      security: []
+      parameters:
+        - name: codigo
+          in: path
+          required: true
+          description: Código de verificación impreso en el certificado.
+          schema:
+            type: string
+            minLength: 10
+            maxLength: 80
+          example: 7-3f9a1c2b7d4e8f60a1b2
+      responses:
+        "200":
+          description: Resultado de la verificación (válido o no válido).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Verificacion"
+              examples:
+                valido:
+                  summary: Código real
+                  value:
+                    valido: true
+                    nombres: Ana Pérez
+                    tipoCertificado: MATRICULA
+                    fechaEmision: "2026-10-20"
+                noValido:
+                  summary: Código alterado
+                  value:
+                    valido: false
+components:
+  securitySchemes:
+    tokenUsuario:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token del sistema de usuarios de la universidad (simulado con JWT, supuesto A2).
+  parameters:
+    IdSolicitud:
+      name: id
+      in: path
+      required: true
+      description: Identificador interno del pedido.
+      schema:
+        type: integer
+        minimum: 1
+      example: 1
+  responses:
+    NoAutenticado:
+      description: Falta el token o no es válido.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            codigo: NO_AUTENTICADO
+            mensaje: Se requiere iniciar sesión.
+    SinPermiso:
+      description: El rol del usuario no permite esta acción.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            codigo: SIN_PERMISO
+            mensaje: El usuario no tiene permiso para esta acción.
+    NoEncontrado:
+      description: El pedido no existe o no pertenece al usuario; no se indica cuál de los dos casos ocurre (E-01).
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            codigo: NO_ENCONTRADO
+            mensaje: Pedido no encontrado.
+    Conflicto:
+      description: La acción no es posible en el estado actual del pedido.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Conflicto"
+          example:
+            codigo: CONFLICTO_ESTADO
+            mensaje: El pedido ya fue resuelto.
+            estadoActual: APROBADO
+    DatosInvalidos:
+      description: Los datos enviados no cumplen el contrato.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            codigo: DATOS_INVALIDOS
+            mensaje: El tipo de certificado no es válido.
+  schemas:
+    TipoCertificado:
+      type: string
+      description: Tipos de certificado definidos por la jefatura de Secretaría (S3).
+      enum: [MATRICULA, CALIFICACIONES, CULMINACION_ESTUDIOS]
+    EstadoSolicitud:
+      type: string
+      enum: [EN_VALIDACION, VALIDADO, APROBADO, RECHAZADO]
+    NuevaSolicitud:
+      type: object
+      required: [tipoCertificado]
+      additionalProperties: false
+      properties:
+        tipoCertificado:
+          $ref: "#/components/schemas/TipoCertificado"
+    Resolucion:
+      type: object
+      required: [decision]
+      additionalProperties: false
+      properties:
+        decision:
+          type: string
+          enum: [APROBAR, RECHAZAR]
+        motivo:
+          type: string
+          maxLength: 300
+          description: Obligatorio cuando la decisión es RECHAZAR.
+    Solicitud:
+      type: object
+      required: [id, numeroTramite, tipoCertificado, estado, fechaCreacion]
+      properties:
+        id:
+          type: integer
+          example: 1
+        numeroTramite:
+          type: string
+          example: CERT-2026-000001
+        tipoCertificado:
+          $ref: "#/components/schemas/TipoCertificado"
+        estado:
+          $ref: "#/components/schemas/EstadoSolicitud"
+        fechaCreacion:
+          type: string
+          format: date-time
+          example: "2026-10-20T15:30:00Z"
+        motivoRechazo:
+          type: string
+          nullable: true
+          example: null
+        codigoVerificacion:
+          type: string
+          nullable: true
+          description: Solo existe cuando el pedido está APROBADO.
+          example: null
+    Verificacion:
+      type: object
+      required: [valido]
+      additionalProperties: false
+      description: Nunca incluye calificaciones (E-03, R1).
+      properties:
+        valido:
+          type: boolean
+        nombres:
+          type: string
+          description: Nombres del titular; solo si el código es válido.
+        tipoCertificado:
+          $ref: "#/components/schemas/TipoCertificado"
+        fechaEmision:
+          type: string
+          format: date
+    Error:
+      type: object
+      required: [codigo, mensaje]
+      properties:
+        codigo:
+          type: string
+        mensaje:
+          type: string
+    Conflicto:
+      allOf:
+        - $ref: "#/components/schemas/Error"
+        - type: object
+          required: [estadoActual]
+          properties:
+            estadoActual:
+              $ref: "#/components/schemas/EstadoSolicitud"

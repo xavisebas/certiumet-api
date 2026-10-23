@@ -1,0 +1,43 @@
+[importlinter]
+include_external_packages = True
+root_packages =
+    config
+    solicitudes
+    emision
+    auditoria
+    integracion_academica
+
+[importlinter:contract:dominio-sin-django]
+name = El dominio, los puertos y los casos de uso no dependen de Django (ADR-003)
+type = forbidden
+source_modules =
+    solicitudes.dominio
+    solicitudes.puertos
+    solicitudes.casos_uso
+    emision.dominio
+    emision.pdf
+    integracion_academica.puerto
+forbidden_modules =
+    django
+    rest_framework
+allow_indirect_imports = False
+
+[importlinter:contract:negocio-sin-adaptador-academico]
+name = Solo la fábrica conoce el adaptador académico concreto (E-05, ADR-002)
+type = forbidden
+source_modules =
+    solicitudes
+    emision
+    auditoria
+forbidden_modules =
+    integracion_academica.adaptador_simulado
+allow_indirect_imports = True
+
+[importlinter:contract:auditoria-independiente]
+name = La bitácora no depende de otros módulos de negocio
+type = forbidden
+source_modules =
+    auditoria
+forbidden_modules =
+    solicitudes
+    emision

@@ -1,0 +1,8 @@
+Analyzed 47 files, 76 dependencies.
+-----------------------------------
+
+El dominio, los puertos y los casos de uso no dependen de Django (ADR-003) KEPT
+Solo la fábrica conoce el adaptador académico concreto (E-05, ADR-002) KEPT
+La bitácora no depende de otros módulos de negocio KEPT
+
+Contracts: 3 kept, 0 broken.

@@ -1,0 +1,11 @@
+5.15.11
+POST /solicitudes (válido):
+{"id":1,"numeroTramite":"CERT-2026-000001","tipoCertificado":"MATRICULA","estado":"EN_VALIDACION","fechaCreacion":"2026-10-20T15:30:00Z","motivoRechazo":null,"codigoVerificacion":null}  [HTTP 201]
+POST /solicitudes (tipo no válido):
+{"codigo":"DATOS_INVALIDOS","mensaje":"El tipo de certificado no es válido."}  [HTTP 422]
+GET /solicitudes/1 sin token:
+{"codigo":"NO_AUTENTICADO","mensaje":"Se requiere iniciar sesión."}  [HTTP 401]
+PATCH /resolucion (segunda aprobación, 409):
+{"codigo":"CONFLICTO_ESTADO","mensaje":"El pedido ya fue resuelto.","estadoActual":"APROBADO"}  [HTTP 409]
+GET /verificaciones/{codigo} (público):
+{"valido":true,"nombres":"Ana Pérez","tipoCertificado":"MATRICULA","fechaEmision":"2026-10-20"}  [HTTP 200]

@@ -1,0 +1,31 @@
+Base de datos: certiumet
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.7.0 -- /home/xavier/proyectos/certiumet-api/.venv/bin/python
+django: version: 5.2.18, settings: config.settings (from ini)
+rootdir: /home/xavier/proyectos/certiumet-api
+configfile: pyproject.toml
+testpaths: tests
+plugins: bdd-8.1.0, django-4.14.0
+collecting ... collected 15 items / 1 deselected / 14 selected
+
+tests/test_hu01_pedir_certificado.py::test_ca011_pedido_válido Creating test database for alias 'default'...
+PASSED
+tests/test_hu01_pedir_certificado.py::test_ca012_tipo_de_certificado_no_permitido PASSED
+tests/test_hu01_pedir_certificado.py::test_ca014_sistema_académico_sin_respuesta PASSED
+tests/test_hu02_consultar_pedido.py::test_ca021_consulta_de_un_pedido_propio PASSED
+tests/test_hu02_consultar_pedido.py::test_ca022_intentos_de_ver_pedidos_ajenos PASSED
+tests/test_hu03_resolver_pedido.py::test_ca031_aprobación_de_un_pedido_validado PASSED
+tests/test_hu03_resolver_pedido.py::test_ca032_aprobaciones_simultáneas 
+[E-02] pares=1000 certificados=1000 duplicados=0
+[E-02] segundas aprobaciones con 409: 1000/1000
+PASSED
+tests/test_hu03_resolver_pedido.py::test_ca033_rechazo_con_motivo PASSED
+tests/test_hu03_resolver_pedido.py::test_ca034_un_estudiante_intenta_aprobar PASSED
+tests/test_hu04_descargar_certificado.py::test_ca041_descarga_de_un_certificado_emitido PASSED
+tests/test_hu04_descargar_certificado.py::test_ca042_pedido_todavía_sin_aprobar PASSED
+tests/test_hu04_descargar_certificado.py::test_ca043_certificado_de_otro_estudiante PASSED
+tests/test_hu05_verificar_certificado.py::test_ca051_códigos_reales PASSED
+tests/test_hu05_verificar_certificado.py::test_ca052_códigos_alterados PASSEDDestroying test database for alias 'default'...
+
+
+====================== 14 passed, 1 deselected in 10.56s =======================
