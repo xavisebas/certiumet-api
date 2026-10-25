@@ -8,6 +8,7 @@ Las decisiones se registran con el formato propuesto por Nygard (2011): título,
 | [ADR-002](ADR-002-integracion-sistema-academico.md) | Conexión con el sistema académico mediante puerto y adaptador | Aceptada | E-05, E-06, E-01 |
 | [ADR-003](ADR-003-estilo-arquitectonico.md) | Estilo arquitectónico: monolito modular con arquitectura hexagonal (decisión final) | Aceptada | E-01 a E-08 |
 | [ADR-004](ADR-004-idioma-de-los-artefactos.md) | Idioma de los artefactos: lenguaje del negocio en español y términos técnicos del framework en inglés | Aceptada | E-05 |
+| [ADR-005](ADR-005-stack-de-construccion-y-pruebas.md) | Herramientas de construcción y pruebas: Django REST Framework, pytest-bdd, ruff, import-linter y generación del esqueleto con IA verificada | Aceptada | E-01 a E-05 |
 
 **Matriz ponderada de la decisión de estilo:** [`matriz-decision.md`](matriz-decision.md)
 

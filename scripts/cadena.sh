@@ -50,4 +50,18 @@ paso "8. Matriz: Spectral y Redocly sobre el contrato con defectos sembrados"
 { spectral lint api/pruebas/openapi-con-defectos.yaml -F hint; echo "codigo de salida: $?"; } 2>&1 | tee "$EVID/08-matriz-spectral.txt"
 { redocly --version; redocly lint api/pruebas/openapi-con-defectos.yaml --format stylish; echo "codigo de salida: $?"; } 2>&1 | tee "$EVID/09-matriz-redocly.txt"
 
+paso "9. Matriz de generación de código (T06): OpenAPI Generator y datamodel-code-generator"
+{
+  echo "--- OpenAPI Generator (python-fastapi): operaciones y hallazgos de ruff en el código generado"
+  echo "Operaciones generadas: $(grep -c 'async def' api/stubs/python-fastapi/src/certiumet_stubs/apis/*_api.py | awk -F: '{s+=$2} END {print s}')"
+  ruff check --isolated --select E,F,W api/stubs/python-fastapi/src --statistics; echo "codigo de salida ruff: $?"
+  echo
+  echo "--- datamodel-code-generator: modelos Pydantic desde el contrato"
+  datamodel-codegen --version
+  datamodel-codegen --input api/openapi.yaml --input-file-type openapi --output-model-type pydantic_v2.BaseModel \
+    --output api/stubs/modelos_pydantic.py --disable-timestamp 2>/dev/null; echo "codigo de salida: $?"
+  echo "Clases generadas: $(grep -c '^class ' api/stubs/modelos_pydantic.py)"
+  ruff check --isolated --select E,F,W api/stubs/modelos_pydantic.py --statistics; echo "codigo de salida ruff: $?"
+} 2>&1 | tee "$EVID/11-matriz-generacion.txt"
+
 echo; echo "Listo. Las salidas quedaron en $EVID/"

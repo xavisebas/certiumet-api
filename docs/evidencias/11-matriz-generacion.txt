@@ -1,0 +1,14 @@
+--- OpenAPI Generator (python-fastapi): operaciones y hallazgos de ruff en el código generado
+Operaciones generadas: 5
+47	E501	[ ] line-too-long
+22	F401	[*] unused-import
+ 1	F811	[*] redefined-while-unused
+Found 70 errors.
+[*] 23 fixable with the `--fix` option.
+codigo de salida ruff: 1
+
+--- datamodel-code-generator: modelos Pydantic desde el contrato
+datamodel-codegen 0.86.0
+codigo de salida: 0
+Clases generadas: 9
+codigo de salida ruff: 0

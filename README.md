@@ -69,11 +69,13 @@ docs/
 │   ├── ADR-002-integracion-sistema-academico.md
 │   ├── ADR-003-estilo-arquitectonico.md
 │   ├── ADR-004-idioma-de-los-artefactos.md
+│   ├── ADR-005-stack-de-construccion-y-pruebas.md
 │   └── matriz-decision.md        Matriz ponderada del estilo
 ├── 04-registro-ia.md             Registro de uso de IA
 ├── 06-mapa-toolchain.md          Proceso por fases, tareas F×E×R, herramientas CASE y evidencia
 ├── 07-historias-y-criterios.md   Historias de usuario y criterios en Gherkin
-├── 08-informe-cadena-case.md     Informe final y matriz de selección de herramientas
+├── 08-informe-cadena-case.md     Informe final y matrices de selección de herramientas
+├── 09-revision-de-codigo.md      Revisión del código con rúbrica
 ├── api/                          Documentación HTML generada desde el contrato
 └── evidencias/                   Salidas de cada herramienta de la cadena
 ```

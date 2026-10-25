@@ -1,7 +1,7 @@
 # 06 · Mapa de toolchain: priorización de tareas de alto volumen con herramientas CASE
 
 **Proyecto:** CertiUMET API · **Semana:** 2 · **Fecha:** 22/10/2026
-**Documentos relacionados:** `01-contexto-y-drivers.md` (S, R, D y E-01 a E-08), `03-adr/` (ADR-001 a ADR-004), `07-historias-y-criterios.md` (HU y CA)
+**Documentos relacionados:** `01-contexto-y-drivers.md` (S, R, D y E-01 a E-08), `03-adr/` (ADR-001 a ADR-005), `07-historias-y-criterios.md` (HU y CA)
 
 Desde esta semana el análisis cambia de objeto: ya no se estudia el producto, sino el proceso para construirlo y verificarlo, con el fin de decidir qué tareas conviene apoyar con herramientas CASE (herramientas que asisten las actividades del desarrollo de software). Las etapas siguen los procesos técnicos de ISO/IEC/IEEE 12207 (ISO/IEC/IEEE, 2017) y la selección de herramientas toma como base ISO/IEC 14102 (ISO/IEC, 2008).
 
@@ -103,7 +103,7 @@ Upper CASE apoya el análisis y el diseño; Lower CASE apoya la construcción, l
 |---|---|---|---|---|
 | Analizar | T02 Trazabilidad HU → ADR | 27 | GitHub Issues y Projects | Upper CASE |
 | Diseñar | T04 Contrato OpenAPI | 64 | Swagger Editor y Spectral | Upper CASE |
-| Construir | T06 Código base de endpoints | 48 | OpenAPI Generator | Lower CASE |
+| Construir | T06 Código base de endpoints | 48 | Claude (IA) verificado por la cadena; OpenAPI Generator como referencia del contrato (actualizado el 24/10, ver abajo) | Lower CASE |
 | Probar | T07 Pruebas de concurrencia y aceptación (E-02) | 100 | pytest y pytest-bdd, con Claude como asistente de IA que propone casos de prueba | Lower CASE |
 | Integrar y revisar | T09 Revisión de pull requests | 36 | GitHub (pull requests) con lista de revisión y GitHub Actions | I-CASE |
 | Entregar | T10 Changelog y versión | 8 | Etiquetas y releases de Git y GitHub (Chacon y Straub, 2014) | Lower CASE |
@@ -114,7 +114,7 @@ Upper CASE apoya el análisis y el diseño; Lower CASE apoya la construcción, l
 |---|---|---|---|---|
 | T07 Pruebas | Priorizada | pytest y pytest-bdd, con Claude que propone casos | Alto | Ejecutar la prueba de concurrencia sobre PostgreSQL: 0 certificados duplicados en 1 000 pares de aprobaciones simultáneas (E-02) |
 | T04 Contrato | Priorizada | Swagger Editor y Spectral | Medio | Spectral sin errores y contrato contrastado con las historias del `07` |
-| T06 Código base | Priorizada | OpenAPI Generator | Medio | El esqueleto arranca y sus rutas, métodos y códigos de estado coinciden con el contrato |
+| T06 Código base | Priorizada | Claude (IA) con OpenAPI Generator como referencia | Alto | El esqueleto arranca y sus rutas, métodos y códigos de estado coinciden con el contrato |
 | T02 Trazabilidad | Habilitante | GitHub Issues y Projects | Medio | Cada historia tiene escenario, criterios, endpoint y ADR; cada commit cita el número de su issue |
 | T01 Criterios | Habilitante | Gherkin (archivos `.feature`) con borrador de IA revisado | Medio | Cada criterio conserva la medida de su escenario (por ejemplo, E-02: 0 duplicados en 1 000 pares) |
 | T05 Documentación y mock | Habilitante | Prism (mock) y OpenAPI Generator (documentación) | Bajo | El mock responde con los esquemas y códigos del contrato (por ejemplo, 409 al aprobar un pedido ya aprobado) |
@@ -146,7 +146,13 @@ Se instalaron las herramientas de las tres tareas priorizadas y se probaron sobr
 | T05 · Prism 5.15.11 (habilitante) | 23/10/2026 | 8 s | El mock respondió según el contrato: 201, 422, 401, 409 y 200 | — | Bajo | `04b-prism-mock.txt` |
 | T08 · ruff 0.14.14 e import-linter 2.15 (habilitantes) | 23/10/2026 | Menos de 1 s | Sin errores de estilo; las 3 reglas de dependencia se cumplen (dominio sin Django, adaptador académico solo en la fábrica, bitácora independiente) | En la primera versión ruff encontró 3 errores en el código generado con IA | Bajo | `05-ruff.txt`, `06-import-linter.txt` |
 
-La comparación de Spectral, Redocly CLI y Claude para la tarea T04, con pesos y calificaciones, está en la matriz del `08-informe-cadena-case.md`.
+| T06 · datamodel-code-generator 0.86.0 | 24/10/2026 | Menos de 2 s | Generó 9 clases Pydantic de los esquemas del contrato, sin hallazgos de ruff | No genera rutas ni lógica; no usa los serializadores de DRF | Bajo | `11-matriz-generacion.txt` |
+
+La comparación de Spectral, Redocly CLI y Claude para la tarea T04 está en la sección 4 del `08-informe-cadena-case.md`, y la de OpenAPI Generator, datamodel-code-generator y Claude para la tarea T06, en la sección 5.
+
+## Actualización del mapa (24/10/2026)
+
+Con la comparación de la tarea T06 pedida en la clase del 23/10, la herramienta de la fase Construir cambia: el esqueleto en Django lo genera **Claude (IA)** y solo se acepta si pasa ruff, import-linter y las pruebas de los criterios; **OpenAPI Generator** se mantiene para la documentación y los stubs de referencia. El riesgo de uso de T06 sube de medio a alto, porque la salida de la IA no es repetible. La decisión y sus alternativas están en el ADR-005, y la revisión del código resultante en el `09-revision-de-codigo.md`.
 
 ## Referencias
 

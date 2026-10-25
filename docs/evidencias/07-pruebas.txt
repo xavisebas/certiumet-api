@@ -5,7 +5,7 @@ django: version: 5.2.18, settings: config.settings (from ini)
 rootdir: /home/xavier/proyectos/certiumet-api
 configfile: pyproject.toml
 testpaths: tests
-plugins: bdd-8.1.0, django-4.14.0
+plugins: platformdirs-4.12.4, bdd-8.1.0, typeguard-4.6.0, django-4.14.0
 collecting ... collected 15 items / 1 deselected / 14 selected
 
 tests/test_hu01_pedir_certificado.py::test_ca011_pedido_válido Creating test database for alias 'default'...
@@ -28,4 +28,4 @@ tests/test_hu05_verificar_certificado.py::test_ca051_códigos_reales PASSED
 tests/test_hu05_verificar_certificado.py::test_ca052_códigos_alterados PASSEDDestroying test database for alias 'default'...
 
 
-====================== 14 passed, 1 deselected in 10.56s =======================
+====================== 14 passed, 1 deselected in 11.10s =======================

@@ -46,16 +46,18 @@ El detalle del proceso, las diez tareas con su puntuación F×E×R y la herramie
 | Mapa de toolchain y evidencia | `docs/06-mapa-toolchain.md` | T01 a T10 |
 | Historias y criterios | `docs/07-historias-y-criterios.md` | HU-01 a HU-05, CA-01.1 a CA-05.2 |
 | Decisión de idioma | `docs/03-adr/ADR-004-idioma-de-los-artefactos.md` | ADR-004 |
+| Herramientas de construcción y pruebas | `docs/03-adr/ADR-005-stack-de-construccion-y-pruebas.md` | ADR-005 |
+| Revisión del código con rúbrica | `docs/09-revision-de-codigo.md` | T09 |
 | Contrato | `api/openapi.yaml` | 5 endpoints, uno por HU |
 | Documentación generada | `docs/api/index.html` | — |
 | Stubs generados | `api/stubs/python-fastapi/` | — |
 | Esqueleto ejecutable | `src/` | Módulos `solicitudes`, `emision`, `auditoria`, `integracion_academica` (ADR-003) |
 | Pruebas | `tests/` | Una prueba por CA, con etiquetas `@HU-0n` y `@E-0n` |
-| Evidencia | `docs/evidencias/` | Salidas 01 a 10 |
+| Evidencia | `docs/evidencias/` | Salidas 01 a 11 |
 
 **Hallazgos de la cadena**
 
-- **T06 · Stubs.** OpenAPI Generator no tiene un generador de servidor para Django. Se generaron los stubs con `python-fastapi` y se usaron como referencia de rutas, modelos y códigos de estado; el esqueleto en Django se escribió a mano siguiendo esa referencia. Para semanas siguientes queda la opción de comparar el contrato con el esquema que produce la propia API (por ejemplo, con drf-spectacular).
+- **T06 · Stubs.** OpenAPI Generator no tiene un generador de servidor para Django. Se generaron los stubs con `python-fastapi` y se usaron como referencia de rutas, modelos y códigos de estado; el esqueleto en Django se generó con IA (Claude) siguiendo esa referencia y se verificó con ruff, import-linter y las pruebas. La comparación de las tres alternativas de generación está en la sección 5 y la decisión en el ADR-005.
 - **T07 · Concurrencia.** La prueba CA-03.2 envía 1 000 pares de aprobaciones simultáneas sobre PostgreSQL y comprueba 0 certificados duplicados y 409 en las 1 000 segundas aprobaciones. Para saber si la prueba detecta el defecto que debe detectar, se quitó a propósito el bloqueo por fila (`select_for_update`): la restricción `UNIQUE` evitó los duplicados, pero la API respondió 500 en lugar de 409 y la prueba falló. Se confirmó así que las dos barreras del ADR-001 son necesarias y que la prueba no da falsa seguridad.
 - **CA-01.3 (E-07).** La prueba de carga lleva la etiqueta `@carga` y se excluye de las pruebas del esqueleto; se ejecutará con una herramienta de carga en la semana 3.
 
@@ -109,15 +111,45 @@ Cálculo: puntaje = Σ (peso × calificación) ÷ 100. Por ejemplo, Spectral: 0,
 
 **Cambios al contrato real tras la revisión de Claude.** Se aceptaron dos hallazgos: se agregó `additionalProperties: false` al esquema `Verificacion` y se quitó la URL de la licencia. Se rechazó, por ahora, separar las respuestas con `oneOf`, porque complica los stubs generados. Las dos reglas sí se cumplen en el código: el dominio rechaza con 422 un rechazo sin motivo (`Solicitud.rechazar`) y la prueba CA-05.2 comprueba que un código no válido devuelve solo `{"valido": false}`. Queda pendiente agregar un criterio para el rechazo sin motivo. Después de los cambios, Spectral siguió sin errores y las 14 pruebas siguieron pasando.
 
-## 5. Uso de IA y verificación
+## 5. Matriz de evaluación de la generación de código (tarea T06)
 
-El uso de IA de esta semana está en `04-registro-ia.md` (filas 11 a 14), con herramienta y versión, prompt, salida, defectos, decisión y verificación. Todo artefacto generado con IA se verificó con una ejecución real: el contrato con Spectral, el código con ruff e import-linter, y el comportamiento con las 14 pruebas sobre PostgreSQL.
+En la clase del 23/10/2026 se pidió comparar también tres alternativas para generar el código desde el contrato. Se compararon **OpenAPI Generator 7.26.0** (generador `python-fastapi`), **datamodel-code-generator 0.86.0** (modelos Pydantic) y **Claude Opus 5.5** (IA, que generó el esqueleto en Django). Las dos primeras se ejecutan en el paso 9 de `cadena.sh` (`docs/evidencias/11-matriz-generacion.txt`); la salida de la IA se verificó con la cadena completa (filas 13 y 14 del `04`).
 
-## 6. Pendientes para la semana 3
+| Dato observado | OpenAPI Generator | datamodel-code-generator | Claude (IA) |
+|---|---|---|---|
+| Operaciones del contrato generadas | 5 de 5 (cuerpos vacíos) | 0 de 5 | 5 de 5, con lógica |
+| Esquemas del contrato generados | Todos | 9 clases | Implementados en dominio y vistas |
+| Framework del código | FastAPI | Pydantic | Django REST Framework (ADR-003) |
+| Hallazgos de ruff en la primera salida | 70 (47 líneas largas, 22 importaciones sin uso, 1 redefinición) | 0 | 3 |
+| Pruebas de los criterios en la primera salida | No aplica | No aplica | 0 de 14 pasaban (13 fallaban y 1 se omitió); 14 de 14 después de corregir |
+| ¿Mismo resultado en cada ejecución? | Sí | Sí | No |
+| Licencia y costo | Apache 2.0, sin costo | MIT, sin costo | Depende del plan del proveedor |
+
+| Criterio | Peso | OpenAPI Generator | datamodel-code-generator | Claude (IA) |
+|---|---|---|---|---|
+| C1 · Cubre el contrato (rutas y esquemas) | 25 % | 5 · las 5 operaciones y los esquemas | 2 · solo esquemas | 5 · las 5 operaciones con su lógica |
+| C2 · Encaja con el stack elegido (ADR-003) | 25 % | 1 · no hay generador para Django | 2 · modelos que habría que pasar a serializadores | 5 · Django REST Framework con puertos y adaptadores |
+| C3 · Calidad de la primera salida | 20 % | 2 · 70 hallazgos y operaciones vacías | 5 · 0 hallazgos, compila | 3 · 3 hallazgos y 13 pruebas fallando, corregidos |
+| C4 · Repetible e integrable en la cadena | 20 % | 5 · CLI con código de salida | 5 · CLI con código de salida | 2 · se usa en un chat; la salida cambia |
+| C5 · Licencia y costo (R4) | 10 % | 5 | 5 | 3 |
+| **Puntaje ponderado (sobre 5)** | **100 %** | **3,40** | **3,50** | **3,80** |
+
+**Por qué gana la IA en este caso.** Es la única alternativa que produce código para el stack elegido (Django REST Framework) y que cubre la lógica de las cinco operaciones; las otras dos solo dan una parte (FastAPI sin lógica, o modelos sin rutas). Su debilidad es la calidad de la primera salida y que no es repetible, por eso **solo se acepta detrás de la cadena**: ruff, import-linter y las 14 pruebas sobre PostgreSQL, más la prueba de mutación de E-02.
+
+**Prueba de sensibilidad.** Si se da más peso a la repetibilidad (C4 30 %) y menos al encaje con el stack (C2 15 %), OpenAPI Generator y datamodel-code-generator suben a 3,80 y Claude baja a 3,50. La selección depende de seguir con Django (ADR-003); si el stack cambiara a FastAPI, OpenAPI Generator sería la mejor opción.
+
+**Selección y riesgos:** Claude para el esqueleto en Django, siempre verificado por la cadena; OpenAPI Generator para la documentación y los stubs de referencia. Riesgos: código que pasa las pruebas sin cumplir el contrato (se controla con la revisión del `09`) y dependencia del proveedor de IA (el código generado queda en el repositorio y se puede mantener sin la IA). Decisión registrada en el ADR-005.
+
+## 6. Uso de IA y verificación
+
+El uso de IA de esta semana está en `04-registro-ia.md` (filas 11 a 15), con herramienta y versión, prompt, salida, defectos, decisión y verificación. Todo artefacto generado con IA se verificó con una ejecución real: el contrato con Spectral, el código con ruff e import-linter, y el comportamiento con las 14 pruebas sobre PostgreSQL.
+
+## 7. Pendientes para la semana 3
 
 - Prueba de carga de CA-01.3 (E-07) y tarea programada de reintentos de E-06.
 - Integración continua en GitHub Actions con Spectral, ruff, import-linter y pytest como controles obligatorios.
-- Revisión cruzada de las vistas C4 por un compañero del módulo.
+- Revisión cruzada de las vistas C4 y del código (`09`) por un compañero del módulo.
+- Hallazgos de la revisión del `09`: respuesta 503 cuando el sistema académico no responde al aprobar, criterio para el rechazo sin motivo y comprobación de claves al iniciar con `DEBUG=0`.
 
 ## Referencias
 

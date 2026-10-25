@@ -11,7 +11,7 @@ api/pruebas/openapi-con-defectos.yaml:
   58:5    warning  operation-operationId           Operation object should contain `operationId` field.
   157:7   warning  operation-4xx-response          Operation must have at least one `4XX` response.
 
-api/pruebas/openapi-con-defectos.yaml: validated in 36ms
+api/pruebas/openapi-con-defectos.yaml: validated in 41ms
 
 ❌ Validation failed with 2 errors and 5 warnings.
 run `redocly lint --generate-ignore-file` to add all problems to the ignore file.
