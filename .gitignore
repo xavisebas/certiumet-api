@@ -12,3 +12,7 @@ node_modules/
 # Variables locales (no subir claves)
 .env
 .import_linter_cache/
+
+# Archivos generados desde el contrato (se regeneran con scripts/cadena.sh)
+api/stubs/
+docs/api/
