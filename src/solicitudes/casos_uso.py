@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+from integracion_academica.puerto import SistemaAcademicoNoDisponible
 from solicitudes.dominio import (
     ConflictoEstado,
     DatosInvalidos,
     Estado,
     NoEncontrado,
+    ServicioNoDisponible,
     SinPermiso,
     Solicitud,
     Usuario,
@@ -76,7 +78,14 @@ def resolver_solicitud(
             raise NoEncontrado()
         if decision == APROBAR:
             solicitud.aprobar()
-            solicitud.codigo_verificacion = emisor.emitir(solicitud)
+            try:
+                solicitud.codigo_verificacion = emisor.emitir(solicitud)
+            except SistemaAcademicoNoDisponible as error:
+                # La transacción se deshace: el pedido sigue VALIDADO y no queda
+                # ningún certificado a medias (E-02, E-06).
+                raise ServicioNoDisponible(
+                    "El sistema académico no responde; intente aprobar el pedido más tarde."
+                ) from error
         else:
             solicitud.rechazar(motivo)
         repo.guardar(solicitud)
