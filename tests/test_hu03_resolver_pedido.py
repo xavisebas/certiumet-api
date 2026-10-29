@@ -13,6 +13,8 @@ from pytest_bdd import given, parsers, scenarios, then, when
 from apoyo import ESTUDIANTE_A, FUNCIONARIO_1, FUNCIONARIO_2, cliente_para, crear_pedido, registro_completo
 from auditoria.models import RegistroAuditoria
 from emision.models import Certificado
+from integracion_academica import fabrica
+from integracion_academica.adaptador_simulado import AdaptadorAcademicoSimulado
 from solicitudes.dominio import Estado
 from solicitudes.models import SolicitudModelo
 
@@ -119,6 +121,16 @@ def funcionario_rechaza(ctx, motivo):
 @then("no se emite ningún certificado")
 def sin_certificado(ctx):
     assert not Certificado.objects.filter(solicitud_id=ctx["id"]).exists()
+
+
+@given("el sistema académico no responde")
+def sistema_academico_caido(monkeypatch):
+    monkeypatch.setattr(fabrica, "AdaptadorAcademicoSimulado", lambda: AdaptadorAcademicoSimulado(disponible=False))
+
+
+@then(parsers.parse('el pedido sigue en estado "{estado}"'))
+def sigue_en_estado(ctx, estado):
+    assert SolicitudModelo.objects.get(pk=ctx["id"]).estado == estado
 
 
 @when("intenta aprobar un pedido")
