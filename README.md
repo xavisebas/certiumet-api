@@ -1,5 +1,7 @@
 # CertiUMET API
 
+[![CI](https://github.com/xavisebas/certiumet-api/actions/workflows/ci.yml/badge.svg)](https://github.com/xavisebas/certiumet-api/actions/workflows/ci.yml)
+
 API REST para pedir, aprobar, emitir y verificar certificados académicos en la Secretaría General de la Universidad Metropolitana del Ecuador (UMET). El caso es académico: el sistema académico de la universidad se simula y todos los datos son ficticios.
 
 ## Datos del proyecto
@@ -14,7 +16,7 @@ API REST para pedir, aprobar, emitir y verificar certificados académicos en la 
 | **Modalidad** | Trabajo individual |
 | **Versión actual** | `v0.2.0` · Hito H2: cadena CASE (contrato, esqueleto y pruebas) |
 
-## Problema que resuelve
+## Visión del proyecto
 
 Hoy el trámite de certificados se hace en ventanilla o por correo: el estudiante no sabe en qué va su pedido, las calificaciones circulan sin control de acceso y nadie puede comprobar si un certificado es auténtico. CertiUMET permite:
 
@@ -26,7 +28,7 @@ Hoy el trámite de certificados se hace en ventanilla o por correo: el estudiant
 
 ## Tecnología prevista
 
-Python 3.12 (el esqueleto también se probó con 3.10) · Django REST Framework · PostgreSQL 16 · Docker Compose · GitHub Actions (hito H4).
+Python 3.12 (el esqueleto también se probó con 3.10) · Django REST Framework · PostgreSQL 16 · GitHub Actions (CI desde el hito H3) · Docker Compose (hito H4).
 
 ## Estructura del repositorio
 
@@ -38,6 +40,10 @@ src/                              Esqueleto Django: solicitudes, emision, audito
 tests/                            Pruebas pytest-bdd generadas desde los criterios del 07
 scripts/cadena.sh                 Ejecuta la cadena CASE y guarda la evidencia en docs/evidencias/
 .spectral.yaml · .importlinter    Reglas de Spectral e import-linter
+.github/workflows/ci.yml          Integración continua (job "pruebas", check obligatorio de main)
+.github/ISSUE_TEMPLATE/           Plantillas de historia de usuario y de tarea técnica
+.github/pull_request_template.md  Plantilla de pull request
+CONTRIBUTING.md                   Ramas, commits, pull requests y versiones
 ```
 
 ## Cómo ejecutar la cadena
@@ -53,6 +59,22 @@ bash scripts/cadena.sh
 ```
 
 Sin las variables `POSTGRES_*` las pruebas usan SQLite y se omite la prueba de concurrencia de E-02, que necesita PostgreSQL (ADR-001).
+
+Para levantar la API en local (con las mismas variables `POSTGRES_*`):
+
+```bash
+cd src
+python manage.py migrate
+python manage.py runserver
+```
+
+La API queda en `http://localhost:8000/api/v1/`. Los endpoints y sus respuestas están en `api/openapi.yaml`; la documentación HTML se genera en `docs/api/` con `scripts/cadena.sh`.
+
+## Cómo contribuir
+
+El repositorio usa **GitHub Flow** (ADR-004): todo cambio nace en un issue, se trabaja en una rama corta, entra a `main` por pull request con el CI en verde y revisión, y cada hito se etiqueta con SemVer. Las reglas completas están en [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+> **Nota para el docente:** el proyecto es individual (clases seguidas en diferido por motivos de trabajo). La revisión cruzada de cada pull request se reemplaza por una autorrevisión escrita del autor, como se explica en `CONTRIBUTING.md`, sección 4.
 
 ## Estructura de la documentación
 
