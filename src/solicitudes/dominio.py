@@ -49,6 +49,10 @@ class DatosInvalidos(ErrorDominio):
     pass
 
 
+class ServicioNoDisponible(ErrorDominio):
+    """Un sistema externo necesario para completar la acción no respondió (E-06)."""
+
+
 @dataclass(frozen=True)
 class Usuario:
     id: int

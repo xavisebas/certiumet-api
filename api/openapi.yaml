@@ -83,7 +83,7 @@ paths:
       operationId: resolverSolicitud
       summary: Aprobar o rechazar un pedido
       description: >-
-        HU-03 · CA-03.1 a CA-03.4. Solo el funcionario de Secretaría puede resolver. Al
+        HU-03 · CA-03.1 a CA-03.6. Solo el funcionario de Secretaría puede resolver. Al
         aprobar se emite un único certificado; una segunda aprobación del mismo pedido
         recibe 409 con el estado actual (E-02, ADR-001).
       parameters:
@@ -113,6 +113,8 @@ paths:
           $ref: "#/components/responses/Conflicto"
         "422":
           $ref: "#/components/responses/DatosInvalidos"
+        "503":
+          $ref: "#/components/responses/SistemaAcademicoNoDisponible"
   /api/v1/solicitudes/{id}/certificado:
     get:
       tags: [Certificados]
@@ -230,6 +232,23 @@ components:
             codigo: CONFLICTO_ESTADO
             mensaje: El pedido ya fue resuelto.
             estadoActual: APROBADO
+    SistemaAcademicoNoDisponible:
+      description: >-
+        El sistema académico no respondió al emitir el certificado; el pedido no cambia
+        de estado y se puede intentar de nuevo después del tiempo indicado en Retry-After (E-06).
+      headers:
+        Retry-After:
+          description: Segundos sugeridos antes de reintentar.
+          schema:
+            type: integer
+            example: 300
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            codigo: SISTEMA_ACADEMICO_NO_DISPONIBLE
+            mensaje: El sistema académico no responde; intente aprobar el pedido más tarde.
     DatosInvalidos:
       description: Los datos enviados no cumplen el contrato.
       content:

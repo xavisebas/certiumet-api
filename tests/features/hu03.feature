@@ -39,3 +39,12 @@ Característica: Resolver un pedido
     Cuando un funcionario lo rechaza sin indicar el motivo
     Entonces la API responde 422
     Y el pedido no cambia de estado
+
+  @E-06
+  Escenario: CA-03.6 Sistema académico sin respuesta al aprobar
+    Dado un pedido en estado "VALIDADO"
+    Y el sistema académico no responde
+    Cuando un funcionario lo aprueba
+    Entonces la API responde 503
+    Y el pedido sigue en estado "VALIDADO"
+    Y no se emite ningún certificado

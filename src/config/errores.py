@@ -4,7 +4,7 @@ from rest_framework import exceptions, status
 from rest_framework.response import Response
 from rest_framework.views import exception_handler
 
-from solicitudes.dominio import ConflictoEstado, DatosInvalidos, NoEncontrado, SinPermiso
+from solicitudes.dominio import ConflictoEstado, DatosInvalidos, NoEncontrado, ServicioNoDisponible, SinPermiso
 
 
 def manejar_excepcion(exc, context):
@@ -25,6 +25,13 @@ def manejar_excepcion(exc, context):
             {"codigo": "DATOS_INVALIDOS", "mensaje": str(exc)},
             status=status.HTTP_422_UNPROCESSABLE_ENTITY,
         )
+    if isinstance(exc, ServicioNoDisponible):
+        respuesta = Response(
+            {"codigo": "SISTEMA_ACADEMICO_NO_DISPONIBLE", "mensaje": str(exc)},
+            status=status.HTTP_503_SERVICE_UNAVAILABLE,
+        )
+        respuesta["Retry-After"] = "300"
+        return respuesta
     if isinstance(exc, exceptions.ParseError):
         return Response(
             {"codigo": "DATOS_INVALIDOS", "mensaje": "El cuerpo no es un JSON válido."},
