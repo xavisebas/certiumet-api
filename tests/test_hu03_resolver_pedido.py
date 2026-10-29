@@ -121,6 +121,11 @@ def sin_certificado(ctx):
     assert not Certificado.objects.filter(solicitud_id=ctx["id"]).exists()
 
 
+@when("un funcionario lo rechaza sin indicar el motivo")
+def funcionario_rechaza_sin_motivo(ctx):
+    ctx["respuesta"] = cliente_para(FUNCIONARIO_1).patch(ruta(ctx["id"]), {"decision": "RECHAZAR"}, format="json")
+
+
 @when("intenta aprobar un pedido")
 def estudiante_intenta_aprobar(ctx):
     ctx["id"] = crear_pedido(ESTUDIANTE_A, Estado.VALIDADO)

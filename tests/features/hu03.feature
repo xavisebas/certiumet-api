@@ -33,3 +33,9 @@ Característica: Resolver un pedido
     Cuando intenta aprobar un pedido
     Entonces la API responde 403
     Y el pedido no cambia de estado
+
+  Escenario: CA-03.5 Rechazo sin motivo
+    Dado un pedido en estado "VALIDADO"
+    Cuando un funcionario lo rechaza sin indicar el motivo
+    Entonces la API responde 422
+    Y el pedido no cambia de estado
