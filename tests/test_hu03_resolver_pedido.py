@@ -123,6 +123,11 @@ def sin_certificado(ctx):
     assert not Certificado.objects.filter(solicitud_id=ctx["id"]).exists()
 
 
+@when("un funcionario lo rechaza sin indicar el motivo")
+def funcionario_rechaza_sin_motivo(ctx):
+    ctx["respuesta"] = cliente_para(FUNCIONARIO_1).patch(ruta(ctx["id"]), {"decision": "RECHAZAR"}, format="json")
+
+
 @given("el sistema académico no responde")
 def sistema_academico_caido(monkeypatch):
     monkeypatch.setattr(fabrica, "AdaptadorAcademicoSimulado", lambda: AdaptadorAcademicoSimulado(disponible=False))

@@ -126,8 +126,14 @@ Característica: Resolver un pedido
     Entonces la API responde 403
     Y el pedido no cambia de estado
 
+  Escenario: CA-03.5 Rechazo sin motivo
+    Dado un pedido en estado "VALIDADO"
+    Cuando un funcionario lo rechaza sin indicar el motivo
+    Entonces la API responde 422
+    Y el pedido no cambia de estado
+
   @E-06
-  Escenario: CA-03.5 Sistema académico sin respuesta al aprobar
+  Escenario: CA-03.6 Sistema académico sin respuesta al aprobar
     Dado un pedido en estado "VALIDADO"
     Y el sistema académico no responde
     Cuando un funcionario lo aprueba
@@ -198,13 +204,13 @@ Característica: Verificar la autenticidad de un certificado
 | Criterio | Escenario | Medida que verifica |
 |---|---|---|
 | CA-01.3 | E-07 | El 95 % de las respuestas en menos de 2 s con 500 pedidos en 10 min; 0 pedidos perdidos; menos del 1 % de errores. Lleva la etiqueta `@carga`: se ejecuta con una herramienta de carga en la semana 3 y no forma parte de las pruebas del esqueleto |
-| CA-01.4 y CA-03.5 | E-06 | 0 pedidos perdidos durante la caída. Los reintentos cada 5 minutos (máximo 6) son extensión posterior: la tarea programada no entra en el esqueleto |
+| CA-01.4 y CA-03.6 | E-06 | 0 pedidos perdidos durante la caída. Los reintentos cada 5 minutos (máximo 6) son extensión posterior: la tarea programada no entra en el esqueleto |
 | CA-02.2 y CA-04.3 | E-01 | 100 % de 200 intentos rechazados; 0 calificaciones devueltas; 100 % de los intentos en la bitácora |
 | CA-03.1 y CA-04.1 | E-04 | 100 % de las operaciones registradas con los cinco campos |
 | CA-03.2 | E-02 | 0 certificados duplicados en 1 000 pares de aprobaciones simultáneas; 100 % de las segundas aprobaciones con 409 |
 | CA-05.1 y CA-05.2 | E-03 | 100 % de 100 códigos alterados marcados como no válidos; 0 errores con 100 códigos reales |
 
-Los criterios sin escenario de calidad (CA-01.1, CA-01.2, CA-02.1, CA-03.3, CA-03.4 y CA-04.2) verifican la funcionalidad básica del driver D6.
+Los criterios sin escenario de calidad (CA-01.1, CA-01.2, CA-02.1, CA-03.3, CA-03.4, CA-03.5 y CA-04.2) verifican la funcionalidad básica del driver D6.
 
 ## Paso 3 · Revisión con la lista de verificación (ISO/IEC/IEEE 29148)
 
@@ -222,7 +228,7 @@ Los criterios sin escenario de calidad (CA-01.1, CA-01.2, CA-02.1, CA-03.3, CA-0
 |---|---|---|---|---|---|
 | HU-01 | E-07 (E-06 extensión) | CA-01.1 a CA-01.4 | `POST /api/v1/solicitudes` | ADR-002, ADR-003 | _(número al crear el issue)_ |
 | HU-02 | E-01, E-04 | CA-02.1 y CA-02.2 | `GET /api/v1/solicitudes/{id}` | ADR-003 | |
-| HU-03 | E-02, E-04, E-06 | CA-03.1 a CA-03.5 | `PATCH /api/v1/solicitudes/{id}/resolucion` | ADR-001, ADR-003 | |
+| HU-03 | E-02, E-04, E-06 | CA-03.1 a CA-03.6 | `PATCH /api/v1/solicitudes/{id}/resolucion` | ADR-001, ADR-003 | |
 | HU-04 | E-01, E-04 | CA-04.1 a CA-04.3 | `GET /api/v1/solicitudes/{id}/certificado` | ADR-003 | |
 | HU-05 | E-03 | CA-05.1 y CA-05.2 | `GET /api/v1/verificaciones/{codigo}` | ADR-003 | |
 

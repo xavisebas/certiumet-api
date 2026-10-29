@@ -34,8 +34,14 @@ Característica: Resolver un pedido
     Entonces la API responde 403
     Y el pedido no cambia de estado
 
+  Escenario: CA-03.5 Rechazo sin motivo
+    Dado un pedido en estado "VALIDADO"
+    Cuando un funcionario lo rechaza sin indicar el motivo
+    Entonces la API responde 422
+    Y el pedido no cambia de estado
+
   @E-06
-  Escenario: CA-03.5 Sistema académico sin respuesta al aprobar
+  Escenario: CA-03.6 Sistema académico sin respuesta al aprobar
     Dado un pedido en estado "VALIDADO"
     Y el sistema académico no responde
     Cuando un funcionario lo aprueba

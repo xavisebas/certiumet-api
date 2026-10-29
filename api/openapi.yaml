@@ -83,7 +83,7 @@ paths:
       operationId: resolverSolicitud
       summary: Aprobar o rechazar un pedido
       description: >-
-        HU-03 · CA-03.1 a CA-03.5. Solo el funcionario de Secretaría puede resolver. Al
+        HU-03 · CA-03.1 a CA-03.6. Solo el funcionario de Secretaría puede resolver. Al
         aprobar se emite un único certificado; una segunda aprobación del mismo pedido
         recibe 409 con el estado actual (E-02, ADR-001).
       parameters:
