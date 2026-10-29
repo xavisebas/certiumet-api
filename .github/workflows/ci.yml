@@ -1,0 +1,73 @@
+# Integración continua de CertiUMET API (ADR-004 y ADR-005).
+# Corre en cada pull request hacia main y en cada push a main.
+# El job "pruebas" es el check obligatorio de la regla de protección de main.
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: certiumet
+          POSTGRES_USER: certiumet
+          POSTGRES_PASSWORD: certiumet_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U certiumet"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      POSTGRES_DB: certiumet
+      POSTGRES_USER: certiumet
+      POSTGRES_PASSWORD: certiumet_ci
+      POSTGRES_HOST: localhost
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Preparar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Instalar dependencias de Python
+        run: pip install -r requirements-dev.txt
+
+      - name: Preparar Node.js 20 para Spectral
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Criterios del 07 = archivos .feature (T01, T02)
+        run: python scripts/extraer_features.py --check
+
+      - name: Contrato OpenAPI con Spectral (T04)
+        run: npx --yes @stoplight/spectral-cli@6 lint api/openapi.yaml --fail-severity=warn
+
+      - name: Linter del código (T08)
+        run: ruff check .
+
+      - name: Reglas de dependencia entre módulos (ADR-003)
+        working-directory: src
+        run: lint-imports --config ../.importlinter
+
+      - name: Pruebas derivadas de los criterios sobre PostgreSQL (T07)
+        run: python -m pytest -v -p no:cacheprovider
