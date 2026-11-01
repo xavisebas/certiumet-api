@@ -72,6 +72,8 @@ Si al integrar aparece un conflicto:
 3. Quitar los marcadores, ejecutar `bash scripts/cadena.sh` y hacer el commit de merge.
 4. Documentar en `docs/10-reporte-conflicto.md`: causa, marcadores, resolución y cómo prevenirlo.
 
+**Prevención:** antes de crear la rama, el identificador del criterio nuevo (CA-0n.m) se reserva en el issue, revisando el último número usado en `docs/07`. Así dos ramas no usan el mismo número, que fue la causa del conflicto entre los PR #9 y #10.
+
 ## 6. Versiones (SemVer 2.0.0)
 
 `MAYOR.MENOR.PARCHE`. Cada hito del módulo tiene su etiqueta anotada sobre el commit de cierre del hito en `main`:
