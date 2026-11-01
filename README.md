@@ -14,7 +14,7 @@ API REST para pedir, aprobar, emitir y verificar certificados académicos en la 
 | **Docente** | Dr. José Luis Rodríguez Chinchilla |
 | **Integrante** | Xavier Guaygua |
 | **Modalidad** | Trabajo individual |
-| **Versión actual** | `v0.2.0` · Hito H2: cadena CASE (contrato, esqueleto y pruebas) |
+| **Versión actual** | `v0.3.0` · Hito H3: repositorio gobernado (GitHub Flow, CI, main protegida y conflicto documentado) |
 
 ## Visión del proyecto
 
@@ -120,5 +120,5 @@ docs/
 |---|---|---|
 | H1 | Dossier de arquitectura | `v0.1.0` |
 | H2 | Cadena CASE: historias, contrato, esqueleto y pruebas | `v0.2.0` |
-| H3 | Ramas e implementación de la API | Pendiente |
+| H3 | Repositorio gobernado: GitHub Flow, CI, main protegida, conflicto documentado, matriz Git vs SVN y ADR-004 | `v0.3.0` |
 | H4 | Pipeline de integración y despliegue continuo | Pendiente |
