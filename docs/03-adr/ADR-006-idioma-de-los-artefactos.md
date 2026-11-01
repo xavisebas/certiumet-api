@@ -1,4 +1,6 @@
-# ADR-004 · Idioma de los artefactos de diseño y del código
+# ADR-006 · Idioma de los artefactos de diseño y del código
+
+> **Nota de numeración:** esta decisión se registró como ADR-004 en la `v0.2.0`. En el hito H3 (29/10/2026) pasó a ser ADR-006, porque la rúbrica de la semana 3 pide el ADR-004 para la decisión de control de versiones ([ADR-004](ADR-004-control-de-versiones-git.md)). El contenido no cambió.
 
 **Estado:** Aceptada
 **Fecha:** 22/10/2026

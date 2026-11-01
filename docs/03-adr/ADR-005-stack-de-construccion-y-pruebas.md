@@ -49,7 +49,7 @@ El ADR-003 fijó el estilo (monolito modular con arquitectura hexagonal en Djang
 
 | Tipo | Elemento |
 |---|---|
-| Decisiones | ADR-001 (PostgreSQL, `UNIQUE` y bloqueo), ADR-003 (estilo), ADR-004 (idioma) |
+| Decisiones | ADR-001 (PostgreSQL, `UNIQUE` y bloqueo), ADR-003 (estilo), ADR-006 (idioma) |
 | Tareas del mapa | T01, T06, T07, T08 (`06-mapa-toolchain.md`) |
 | Evidencia | `docs/evidencias/04-stubs.txt`, `05-ruff.txt`, `06-import-linter.txt`, `07-pruebas.txt`, `11-matriz-generacion.txt` |
 

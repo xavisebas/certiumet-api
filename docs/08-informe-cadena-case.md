@@ -1,7 +1,7 @@
 # 08 · Informe final de la cadena CASE
 
 **Proyecto:** CertiUMET API · **Semana:** 2 · **Versión:** `v0.2.0` · **Fecha:** 23/10/2026
-**Documentos relacionados:** `06-mapa-toolchain.md` (mapa y evidencia), `07-historias-y-criterios.md` (HU y CA), `api/openapi.yaml`, `03-adr/ADR-004`, `04-registro-ia.md`, `docs/evidencias/`
+**Documentos relacionados:** `06-mapa-toolchain.md` (mapa y evidencia), `07-historias-y-criterios.md` (HU y CA), `api/openapi.yaml`, `03-adr/ADR-006`, `04-registro-ia.md`, `docs/evidencias/`
 
 ## 1. Resumen
 
@@ -45,7 +45,7 @@ El detalle del proceso, las diez tareas con su puntuación F×E×R y la herramie
 |---|---|---|
 | Mapa de toolchain y evidencia | `docs/06-mapa-toolchain.md` | T01 a T10 |
 | Historias y criterios | `docs/07-historias-y-criterios.md` | HU-01 a HU-05, CA-01.1 a CA-05.2 |
-| Decisión de idioma | `docs/03-adr/ADR-004-idioma-de-los-artefactos.md` | ADR-004 |
+| Decisión de idioma | `docs/03-adr/ADR-006-idioma-de-los-artefactos.md` | ADR-006 (antes ADR-004) |
 | Herramientas de construcción y pruebas | `docs/03-adr/ADR-005-stack-de-construccion-y-pruebas.md` | ADR-005 |
 | Revisión del código con rúbrica | `docs/09-revision-de-codigo.md` | T09 |
 | Contrato | `api/openapi.yaml` | 5 endpoints, uno por HU |
