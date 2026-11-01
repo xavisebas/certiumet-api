@@ -17,6 +17,8 @@ labels: historia-de-usuario
 
 ## Criterios de aceptación (Gherkin)
 
+**Identificador reservado:** CA-0n.m (revisar el último número de la historia en `docs/07` antes de crear la rama).
+
 ```gherkin
 # language: es
 @HU-0n

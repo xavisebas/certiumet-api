@@ -90,14 +90,18 @@ docs/
 │   ├── ADR-001-base-de-datos-postgresql.md
 │   ├── ADR-002-integracion-sistema-academico.md
 │   ├── ADR-003-estilo-arquitectonico.md
-│   ├── ADR-004-idioma-de-los-artefactos.md
+│   ├── ADR-004-control-de-versiones-git.md
 │   ├── ADR-005-stack-de-construccion-y-pruebas.md
+│   ├── ADR-006-idioma-de-los-artefactos.md
 │   └── matriz-decision.md        Matriz ponderada del estilo
 ├── 04-registro-ia.md             Registro de uso de IA
 ├── 06-mapa-toolchain.md          Proceso por fases, tareas F×E×R, herramientas CASE y evidencia
 ├── 07-historias-y-criterios.md   Historias de usuario y criterios en Gherkin
 ├── 08-informe-cadena-case.md     Informe final y matrices de selección de herramientas
+├── 08-matriz-git-vs-svn.md       Comparación de Git y SVN con siete criterios (H3)
 ├── 09-revision-de-codigo.md      Revisión del código con rúbrica
+├── 10-reporte-conflicto.md       Conflicto deliberado entre los PR #9 y #10: causa, marcadores, resolución y prevención
+├── 11-revision-seguridad.md      Pull requests, protección de main, secretos y dependencias (pip-audit)
 ├── api/                          Documentación HTML generada desde el contrato
 └── evidencias/                   Salidas de cada herramienta de la cadena
 ```
@@ -107,7 +111,8 @@ docs/
 - **Estilo:** monolito modular con arquitectura hexagonal ([ADR-003](docs/03-adr/ADR-003-estilo-arquitectonico.md)).
 - **Base de datos:** PostgreSQL ([ADR-001](docs/03-adr/ADR-001-base-de-datos-postgresql.md)).
 - **Sistema académico:** se consulta solo en lectura, a través de un puerto y un adaptador que se puede cambiar ([ADR-002](docs/03-adr/ADR-002-integracion-sistema-academico.md)).
-- **Idioma:** lenguaje del negocio en español en el contrato, los criterios y el código del dominio ([ADR-004](docs/03-adr/ADR-004-idioma-de-los-artefactos.md)).
+- **Control de versiones:** Git con GitHub Flow, `main` protegida, Conventional Commits y SemVer ([ADR-004](docs/03-adr/ADR-004-control-de-versiones-git.md)).
+- **Idioma:** lenguaje del negocio en español en el contrato, los criterios y el código del dominio ([ADR-006](docs/03-adr/ADR-006-idioma-de-los-artefactos.md)).
 
 ## Hitos del módulo
 

@@ -3,7 +3,7 @@
 **Proyecto:** CertiUMET API · **Semana:** 2 · **Fecha:** 22/10/2026
 **Documentos relacionados:** `01-contexto-y-drivers.md` (S, D, CU-01 a CU-05 y E-01 a E-08), `03-adr/`, `06-mapa-toolchain.md` (T01, T02 y T04), `api/openapi.yaml`
 
-Este documento parte de los escenarios de calidad del dossier y llega a los criterios que después se convierten en pruebas. Los requisitos se revisan con los atributos de un buen requisito de ISO/IEC/IEEE 29148 (ISO/IEC/IEEE, 2018) y los criterios se escriben en Gherkin, el formato Dado / Cuando / Entonces de la práctica BDD (Smart, 2014). Según el ADR-004, los criterios se escriben en español con la cabecera `# language: es`.
+Este documento parte de los escenarios de calidad del dossier y llega a los criterios que después se convierten en pruebas. Los requisitos se revisan con los atributos de un buen requisito de ISO/IEC/IEEE 29148 (ISO/IEC/IEEE, 2018) y los criterios se escriben en Gherkin, el formato Dado / Cuando / Entonces de la práctica BDD (Smart, 2014). Según el ADR-006, los criterios se escriben en español con la cabecera `# language: es`.
 
 **Identificadores nuevos:** HU = historia de usuario (HU-01 a HU-05, una por caso de uso CU-01 a CU-05); CA = criterio de aceptación (CA-0n.m, donde *n* es la historia y *m* el criterio). Cada escenario Gherkin lleva la etiqueta `@HU-0n` y la del escenario de calidad que verifica (por ejemplo, `@E-02`), para unir la prueba con su historia.
 
