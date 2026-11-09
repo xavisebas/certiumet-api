@@ -9,8 +9,9 @@ Métricas (Forsgren et al., 2018, adaptadas):
 1. Frecuencia: integraciones por semana desde el primer pull request y entregas por semana.
 2. Tiempo de entrega de cambios: desde el primer commit de la rama hasta su merge en main.
 3. Tasa de fallos de cambios: pull requests cuya rama tuvo una falla en el pipeline que obligó a
-   corregir antes del merge. Se detecta por el mensaje del commit ("falla provocada", "revert",
-   "corrige ... ci/lint/pipeline"). Se contrasta a mano con la pestaña Actions de GitHub.
+   corregir antes del merge. Se detecta por el mensaje del commit de corrección ("corrige ... ci,
+   lint, pipeline o falla", "revert") o por un commit marcado como "falla provocada".
+   Se contrasta a mano con la pestaña Actions de GitHub.
 4. Tiempo de recuperación: desde el commit que rompió el pipeline hasta el commit que lo corrigió.
 5. Tasa de retrabajo: pull requests de tipo fix sobre el total de pull requests.
 
@@ -23,7 +24,8 @@ import subprocess
 from datetime import datetime
 
 PATRON_MERGE = re.compile(r"Merge pull request #(\d+)")
-PATRON_FALLA = re.compile(r"(?i)falla provocada|revert|corrige .*(ci|pipeline|lint|falla)")
+PATRON_PROVOCADA = re.compile(r"(?i)falla provocada")
+PATRON_CORRIGE = re.compile(r"(?i)^revert|corrige .*(ci|pipeline|lint|falla)")
 PATRON_TAG = re.compile(r"^v\d+\.\d+\.\d+$")
 
 
@@ -68,8 +70,11 @@ def main():
             prs_fix += 1
         falla = "no"
         for indice, (_, cuando, asunto) in enumerate(commits):
-            if PATRON_FALLA.search(asunto) and indice + 1 < len(commits):
+            if PATRON_PROVOCADA.search(asunto) and indice + 1 < len(commits):
                 recuperaciones.append(horas(fecha(commits[indice + 1][1]) - fecha(cuando)))
+                falla = "sí"
+            elif PATRON_CORRIGE.search(asunto) and indice > 0:
+                recuperaciones.append(horas(fecha(cuando) - fecha(commits[indice - 1][1])))
                 falla = "sí"
         if falla == "sí":
             prs_con_falla += 1

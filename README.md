@@ -21,7 +21,7 @@ API REST para pedir, aprobar, emitir y verificar certificados académicos en la 
 | **Docente** | Dr. José Luis Rodríguez Chinchilla |
 | **Integrante** | Xavier Guaygua |
 | **Modalidad** | Trabajo individual |
-| **Versión actual** | `v0.3.0` · Hito H3: repositorio gobernado (GitHub Flow, CI, main protegida y conflicto documentado) |
+| **Versión actual** | `v0.4.0` · Hito H4: pipeline con seis quality gates, trazabilidad e informe final |
 
 ## Visión del proyecto
 
@@ -35,7 +35,7 @@ Hoy el trámite de certificados se hace en ventanilla o por correo: el estudiant
 
 ## Tecnología prevista
 
-Python 3.12 (el esqueleto también se probó con 3.10) · Django REST Framework · PostgreSQL 16 · GitHub Actions (CI desde el hito H3) · Docker Compose (hito H4).
+Python 3.12 (el esqueleto también se probó con 3.10) · Django REST Framework · PostgreSQL 16 · GitHub Actions (CI desde el hito H3) · Docker Compose (fuera del alcance del módulo).
 
 ## Estructura del repositorio
 
@@ -102,10 +102,12 @@ docs/
 │   ├── ADR-006-idioma-de-los-artefactos.md
 │   └── matriz-decision.md        Matriz ponderada del estilo
 ├── 04-registro-ia.md             Registro de uso de IA
+├── 05-trazabilidad.md          Matriz requisito → escenario → ADR → artefacto → commit/PR → pipeline
 ├── 06-mapa-toolchain.md          Proceso por fases, tareas F×E×R, herramientas CASE y evidencia
 ├── 07-historias-y-criterios.md   Historias de usuario y criterios en Gherkin
 ├── 08-informe-cadena-case.md     Informe final y matrices de selección de herramientas
 ├── 08-matriz-git-vs-svn.md       Comparación de Git y SVN con siete criterios (H3)
+├── 09-informe-final.md         Informe final del proyecto (H4)
 ├── 09-revision-de-codigo.md      Revisión del código con rúbrica
 ├── 10-reporte-conflicto.md       Conflicto deliberado entre los PR #9 y #10: causa, marcadores, resolución y prevención
 ├── 11-revision-seguridad.md      Pull requests, protección de main, secretos y dependencias (pip-audit)
@@ -128,4 +130,4 @@ docs/
 | H1 | Dossier de arquitectura | `v0.1.0` |
 | H2 | Cadena CASE: historias, contrato, esqueleto y pruebas | `v0.2.0` |
 | H3 | Repositorio gobernado: GitHub Flow, CI, main protegida, conflicto documentado, matriz Git vs SVN y ADR-004 | `v0.3.0` |
-| H4 | Pipeline de integración y despliegue continuo | Pendiente |
+| H4 | Pipeline con seis quality gates, esqueleto en el CI, trazabilidad e informe final | `v0.4.0` |
