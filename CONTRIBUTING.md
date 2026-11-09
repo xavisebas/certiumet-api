@@ -83,6 +83,7 @@ Si al integrar aparece un conflicto:
 | H1 · Dossier de arquitectura | `v0.1.0` |
 | H2 · Cadena CASE | `v0.2.0` |
 | H3 · Repositorio gobernado | `v0.3.0` |
+| H4 · Pipeline, trazabilidad e informe final | `v0.4.0` |
 
 Mientras la versión mayor sea 0, el contrato puede cambiar. Una corrección urgente sobre una versión publicada sale de `main` en una rama `fix/` y sube el PARCHE (por ejemplo, `v0.3.1`).
 
