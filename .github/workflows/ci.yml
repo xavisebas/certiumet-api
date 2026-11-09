@@ -1,6 +1,12 @@
 # Integración continua de CertiUMET API (ADR-004 y ADR-005).
 # Corre en cada pull request hacia main y en cada push a main.
-# El job "pruebas" es el check obligatorio de la regla de protección de main.
+# Cada job es una "puerta de calidad" (quality gate) y es un check obligatorio
+# de la regla "proteger-main": si una puerta falla, el pull request no se puede integrar.
+#
+# Buenas prácticas aplicadas (rúbrica semana 4):
+# - Permisos mínimos: solo lectura del contenido del repositorio.
+# - Acciones y herramientas fijadas por versión exacta.
+# - Sin secretos: ninguna credencial real; la clave de PostgreSQL es de la base temporal del job.
 name: CI
 
 on:
@@ -12,17 +18,59 @@ on:
 permissions:
   contents: read
 
-jobs:
-  pruebas:
-    runs-on: ubuntu-latest
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
+env:
+  PYTHON_VERSION: "3.12"
+  NODE_VERSION: "22"
+  SPECTRAL_VERSION: "6.17.1"
+  REDOCLY_VERSION: "2.76.0"
+
+jobs:
+  # Puerta 1 · Lint y reglas de arquitectura (T08, ADR-003).
+  calidad:
+    name: calidad
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4.4.0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5.6.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Instalar dependencias
+        run: pip install -r requirements-dev.txt
+
+      - name: Criterios del 07 = archivos .feature (T01, T02)
+        run: python scripts/extraer_features.py --check
+
+      - name: Lint del código con ruff (T08)
+        run: ruff check .
+
+      - name: Reglas de dependencia entre módulos con import-linter (ADR-003, E-05)
+        working-directory: src
+        run: lint-imports --config ../.importlinter
+
+  # Puerta 2 · Pruebas derivadas de los criterios y esqueleto ejecutable (T07, E-02, E-08).
+  pruebas:
+    name: pruebas
+    needs: calidad
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     services:
       postgres:
         image: postgres:16
         env:
           POSTGRES_DB: certiumet
           POSTGRES_USER: certiumet
-          POSTGRES_PASSWORD: certiumet_ci
+          POSTGRES_PASSWORD: certiumet_ci  # escaneo-secretos: permitido (base temporal del job)
         ports:
           - 5432:5432
         options: >-
@@ -30,44 +78,130 @@ jobs:
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
-
     env:
       POSTGRES_DB: certiumet
       POSTGRES_USER: certiumet
-      POSTGRES_PASSWORD: certiumet_ci
+      POSTGRES_PASSWORD: certiumet_ci  # escaneo-secretos: permitido (base temporal del job)
       POSTGRES_HOST: localhost
-
     steps:
       - name: Descargar el código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.4.0
 
-      - name: Preparar Python 3.12
-        uses: actions/setup-python@v5
+      - name: Preparar Python
+        uses: actions/setup-python@v5.6.0
         with:
-          python-version: "3.12"
+          python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
           cache-dependency-path: requirements-dev.txt
 
-      - name: Instalar dependencias de Python
+      - name: Instalar dependencias
         run: pip install -r requirements-dev.txt
 
-      - name: Preparar Node.js 20 para Spectral
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Criterios del 07 = archivos .feature (T01, T02)
-        run: python scripts/extraer_features.py --check
-
-      - name: Contrato OpenAPI con Spectral (T04)
-        run: npx --yes @stoplight/spectral-cli@6 lint api/openapi.yaml --fail-severity=warn
-
-      - name: Linter del código (T08)
-        run: ruff check .
-
-      - name: Reglas de dependencia entre módulos (ADR-003)
-        working-directory: src
-        run: lint-imports --config ../.importlinter
-
-      - name: Pruebas derivadas de los criterios sobre PostgreSQL (T07)
+      - name: Pruebas pytest-bdd sobre PostgreSQL 16 (criterios HU-01 a HU-05)
         run: python -m pytest -v -p no:cacheprovider
+
+      - name: Esqueleto ejecutable · migraciones en una base vacía (E-08)
+        working-directory: src
+        run: python manage.py migrate --noinput
+
+      - name: Esqueleto ejecutable · levantar la API y prueba de humo (E-01, HU-01, HU-02, HU-05)
+        run: |
+          (cd src && python manage.py runserver 127.0.0.1:8000 --noreload > ../servidor.log 2>&1 &)
+          for intento in $(seq 1 20); do
+            curl -s -o /dev/null http://127.0.0.1:8000/api/v1/verificaciones/ping && break
+            sleep 1
+          done
+          python scripts/prueba_humo.py http://127.0.0.1:8000
+
+      - name: Registro del servidor (si la prueba de humo falla)
+        if: failure()
+        run: cat servidor.log || true
+
+  # Puerta 3 · Análisis estático de seguridad del código con Bandit.
+  analisis-estatico:
+    name: analisis-estatico
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4.4.0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5.6.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Instalar dependencias
+        run: pip install -r requirements-dev.txt
+
+      - name: Bandit (severidad y confianza media o alta)
+        run: bandit -r src -x "./src/*/migrations" --severity-level medium --confidence-level medium
+
+  # Puerta 4 · Validación del contrato OpenAPI con Spectral (T04).
+  contrato:
+    name: contrato
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4.4.0
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Spectral sobre api/openapi.yaml (falla también con advertencias)
+        run: npx --yes @stoplight/spectral-cli@${{ env.SPECTRAL_VERSION }} lint api/openapi.yaml --fail-severity=warn
+
+  # Puerta 5 · Build de la documentación de la API desde el contrato (T05).
+  documentacion:
+    name: documentacion
+    needs: contrato
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4.4.0
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Generar docs/api/index.html con Redocly
+        run: npx --yes @redocly/cli@${{ env.REDOCLY_VERSION }} build-docs api/openapi.yaml -o docs/api/index.html
+
+      - name: Publicar la documentación como artefacto del job
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: documentacion-api
+          path: docs/api/index.html
+          retention-days: 7
+
+  # Puerta 6 · Secretos y dependencias vulnerables (SSDF PS.1 y RV.1).
+  seguridad:
+    name: seguridad
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4.4.0
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5.6.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Escaneo de secretos en los archivos versionados
+        run: python scripts/escanear_secretos.py
+
+      - name: Instalar pip-audit
+        run: pip install "pip-audit>=2.9,<3"
+
+      - name: Dependencias con vulnerabilidades conocidas (pip-audit)
+        run: pip-audit -r requirements-dev.txt

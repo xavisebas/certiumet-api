@@ -1,6 +1,13 @@
 # CertiUMET API
 
 [![CI](https://github.com/xavisebas/certiumet-api/actions/workflows/ci.yml/badge.svg)](https://github.com/xavisebas/certiumet-api/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![Django](https://img.shields.io/badge/Django-5.2-092E20?logo=django&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
+![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0.3%20%C2%B7%20Spectral-6BA539?logo=openapiinitiative&logoColor=white)
+![Quality gates](https://img.shields.io/badge/quality%20gates-6-2EA44F)
+![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-FE5196?logo=conventionalcommits&logoColor=white)
+![SemVer](https://img.shields.io/badge/SemVer-2.0.0-blue)
 
 API REST para pedir, aprobar, emitir y verificar certificados académicos en la Secretaría General de la Universidad Metropolitana del Ecuador (UMET). El caso es académico: el sistema académico de la universidad se simula y todos los datos son ficticios.
 
