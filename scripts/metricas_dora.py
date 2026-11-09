@@ -73,9 +73,8 @@ def main():
                 falla = "sí"
         if falla == "sí":
             prs_con_falla += 1
-        filas.append(
-            f"| #{merge['pr']} | {merge['sha']} | {merge['fecha']:%d/%m/%Y %H:%M} | {len(commits)} | {entrega:.1f} | {falla} |"
-        )
+        cuando = f"{merge['fecha']:%d/%m/%Y %H:%M}"
+        filas.append(f"| #{merge['pr']} | {merge['sha']} | {cuando} | {len(commits)} | {entrega:.1f} | {falla} |")
 
     etiquetas = sorted(
         (
